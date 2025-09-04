@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html 
+  xmlns:th="http//www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}"
+  th:with="bodyClass='hold-transition sidebar-mini layout-fixed'">
+<head>
+  <meta charset="UTF-8">
+  <title>사용자관리</title>
+</head>
+
+<th:block layout:fragment="content">
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">사용자목록</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item">Home</li>
+              <li class="breadcrumb-item">사용자목록</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">검색 조건</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <form id="searchForm" action="/admin/user/userList">
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" class="form-control" id="searchEmail" name="searchEmail">
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>Nickname</label>
+                        <input type="text" class="form-control" id="searchNickname" name="searchNickname">
+                      </div>
+                    </div>
+
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchDelYn">탈퇴여부</label>
+                        <select class="form-control" id="searchDelYn" name="searchDelYn">
+                          <option value="">전체</option>
+                          <option value="Y">Y</option>
+                          <option value="N">N</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>가입일</label>
+                        <div class="input-group date" id="searchRegDateInput" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#searchRegDateInput" data-toggle="datetimepicker" id="searchRegDate" name="searchRegDate"/>
+                          <div class="input-group-append" data-target="#searchRegDateInput" data-toggle="datetimepicker">
+                              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchDelYn">권한</label>
+                        <select class="form-control" id="searchRoleNm" name="searchRoleNm">
+                          <option value="">전체</option>
+                          <option value="USER">사용자</option>
+                          <option value="ANALYST">분석가</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 버튼 row -->
+                  <div class="row">
+                    <div class="col text-right">
+                      <button type="button" class="btn btn-secondary mr-2" data-action="form-reset">초기화</button>
+                      <button type="button" class="btn btn-primary" id="btnSearch">조회</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+            <div class="card">
+              <div class="card-header d-flex align-items-center">
+                <h3 class="card-title mb-0">검색 결과</h3>
+                <button id="btnDelete" class="btn btn-danger ml-auto">삭제</button>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="mainTable" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th class="text-center">
+                      <input type="checkbox" class="" id="chkAll">
+                    </th>
+                    <th>Email</th>
+                    <th>권한</th>
+                    <th>로그인 플랫폼</th>
+                    <th>Nickname</th>
+                    <th>탈퇴여부</th>
+                    <th>가입일</th>
+                    <th>수정</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    
+                  </tr>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+
+
+  <!-- modal -->
+  <div class="modal fade" id="userModal">
+    <div class="modal-dialog modal-lg">
+      <!-- modal-content -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4  class="modal-title">사용자 수정</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal">
+            <div class="form-group row">
+              <label for="email" class="col-sm-2 col-form-label">Email</label>
+              <div class="col-sm-10">
+                <div class="input-group">
+                  <input type="email" class="form-control" id="email" placeholder="Email" disabled>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="nickname" class="col-sm-2 col-form-label">Nickname</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="nickname" placeholder="Nickname">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="password" class="col-sm-2 col-form-label">Password</label>
+              <div class="col-sm-10">
+                <input type="password" class="form-control" id="password" placeholder="Password">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="passwordChk" class="col-sm-2 col-form-label">Password 확인</label>
+              <div class="col-sm-10">
+                <input type="password" class="form-control" id="passwordChk" placeholder="Confirm Password">
+              </div>
+            </div>
+            
+
+            <!-- TODO[csm] 기타 정보 -->
+
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btnEditModal" class="btn btn-primary ml-auto mr-2">수정</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+
+</th:block>
+
+<th:block layout:fragment="extraJs">
+  <script>
+    $(function () { 
+
+      //Date picker
+      $('#searchRegDateInput').datetimepicker({
+        format: 'YYYY-MM-DD'
+      });
+
+      //Datetable
+      var table = $('#mainTable').DataTable({
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        ordering: false,
+        searching: false,
+        autoWidth: false,
+        ajax: {
+          url: '/admin/user/userList/data',
+          type: 'GET',
+          data: function (d) {
+
+            //Pageable 객체에 맞게 변환
+            d.page = Math.floor(d.start / d.length);
+            d.size = d.length;
+
+            //검색 파라미터 직렬화
+            var formArray = $('#searchForm').serializeArray();
+            formArray.forEach(function(item) {
+              d[item.name] = item.value;
+            });
+          }
+        },
+        columns: [
+          { 
+            data: 'userId',
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+              return '<input type="checkbox" class="row-checkbox" value="' + row.userId + '">';
+            }
+          },
+          { data: 'email' },
+          { 
+            data: 'roleNmList',
+            render: function(data) {
+              return data.join(', ');
+            }
+          },
+          { data: 'snsProvider' },
+          { data: 'nickname' },
+          { data: 'delYn' },
+          { data: 'regDate' },
+          {
+            data: null,
+            className: 'text-center',
+            render: function (data, type, row, meta) {
+              return `<button class="btn btn-sm btn-warning btn-edit">수정</button>`
+            }
+          }
+
+        ],
+        drawCallback: function(settings) {
+          $('#chkAll').prop('checked', false);
+        }
+      });
+
+      //조회 버튼
+      $('#btnSearch').on('click', function(e) {
+        table.ajax.reload();
+      });
+
+
+      //삭제 버튼
+      $('#btnDelete').on('click', function(e) {
+
+        var selectedValues = [];
+        $('#mainTable .row-checkbox:checked').each(function() {
+          selectedValues.push(Number($(this).val()));
+        })
+
+        if(selectedValues.length == 0) {
+          showCustomAlert("삭제할 사용자를 선택해주세요");
+          return false;
+        }
+
+        if(confirm('삭제하시겠습니까?')){
+
+          $.ajax({
+            url: '/admin/user/userList',
+            type: 'DELETE',
+            contentType: 'application/json',
+            data: JSON.stringify(selectedValues),
+            success: function(response) {
+              table.ajax.reload();
+            },
+            error: function() {
+              showCustomAlert("사용자 삭제 실패");
+            }
+          });
+        }
+
+      })
+
+      //수정 버튼
+      $('#mainTable').on('click', '.btn-edit', function () {
+
+        const tr = $(this).closest('tr');
+        const rowData = table.row(tr.hasClass('child') ? tr.prev('tr') : tr).data(); //반응형으로 tr이 늘어나는 경우 대비
+
+        $('#userModal #email').val(rowData.email);
+        $('#userModal #nickname').val(rowData.nickname);
+
+        $('#btnEditModal')
+          .off('click')
+          .on('click', function () {
+            // 사용자 수정 API
+            if(isValidateUserFormModal()) {
+              var data = {
+                userId : rowData.userId,
+                nickname : $('#nickname').val()
+              };
+
+              if($('#password').val() !== '') {
+                data.userPw = $('#password').val();
+              }
+
+              $.ajax({
+                url: '/admin/user',
+                contentType: 'application/json',
+                type: 'PATCH',
+                data: JSON.stringify(data),
+                success: function(response) {
+                  table.ajax.reload();
+                  $('#userModal').modal('hide');
+                  $('#userModal form')[0].reset();
+                },
+                error: function(xhr, status, error) {
+                  let response = JSON.parse(xhr.responseText);
+                  if(response) {
+                    showCustomAlert(response.message);
+                  }else {
+                    showCustomAlert("사용자 수정 실패");
+                  }
+                }
+              });
+            }
+          });
+
+        $('#userModal').modal('show');
+      });
+
+
+      function isValidateUserFormModal() {
+
+        if(($('#userModal #password').val().trim() !== '' || $('#userModal #passwordChk').val().trim() !== '')
+          && $('#userModal #password').val() != $('#userModal #passwordChk').val()) {
+          showCustomAlert('Password가 일치하지 않습니다.');
+          return false;
+        }
+
+        return true;
+      }
+
+    });
+
+  </script>
+</th:block>
+</html>

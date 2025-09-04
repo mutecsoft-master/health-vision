@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http//www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layoutWithoutHeader}">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .login-container {
+      max-width: 400px;
+      margin: 80px auto;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .btn-google {
+      background-color: #db4437;
+      color: white;
+    }
+    .btn-google:hover {
+      background-color: #c23321;
+      color: white;
+    }
+
+    .btn-apple {
+      background-color: #000;
+      color: white;
+    }
+    .btn-apple:hover {
+      background-color: #333;
+      color: white;
+    }
+  </style>
+</head>
+
+<th:block layout:fragment="content">
+  <div class="container">
+    <div class="login-container">
+      <h3 class="text-center mb-4">HelloGlyco Login</h3>
+      <form method="POST" action="/web/auth/login/proc" onsubmit="return validateForm()">
+        <div class="mb-3">
+          <label for="username" class="form-label">Email</label>
+          <input type="text" class="form-control" name="username" id="username" placeholder="email@example.com"/>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" name="password" id="password" placeholder="••••••••"/>
+        </div>
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary">로그인</button>
+          <button type="button" class="btn btn-google" onclick="location.href='/oauth2/authorization/google'">Google 로그인</button>
+          <button type="button" class="btn btn-apple" onclick="appleLogin()">Apple 로그인</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</th:block>
+
+
+<th:block layout:fragment="extraJs">
+  <script> 
+    const validateForm = () => {
+      const email = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!email) {
+        alert("이메일을 입력하세요.");
+        document.getElementById('username').focus();
+        return false;
+      }
+
+      if (!password) {
+        alert("비밀번호를 입력하세요.");
+        document.getElementById('password').focus();
+        return false;
+      }
+
+      return true;
+    }
+    
+
+    const appleLogin = async () => {
+      const response = await fetch("/web/oauth/appleAuthUrl", {
+        method: "GET",
+      }).catch(() => {
+        alert('애플로그인 URL 요청 실패');
+        return null;
+      });
+
+      if (!response) {
+        console.log("empty - apple auth url");
+        return;
+      }
+
+      const result = await response.json();
+      location.href=result.url;
+    }
+  </script>
+</th:block>
+</html>

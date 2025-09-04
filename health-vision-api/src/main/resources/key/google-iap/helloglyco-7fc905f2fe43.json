@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "helloglyco",
+  "private_key_id": "7fc905f2fe43db6b80a34b8a248bc03f1d9fc59a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDYB3vuIi1ClQYZ\nSE8amIp4sld5e9tfOZ5AoItTJjw+vS4xxXBwt7uQFqa4S1ptO5ohZ3e8m5IGKKv1\nZ7X/b9FRDWNxvyJ0WqVFZIkigF81ZpHi747ebQeCBR0StZog4sGwLPjeNEqu4eJJ\nQ+Ba4YR2Bq5QAcrGYCZFNZjLMtdn9kVIb1F0GBrsgZNzzVYAgGVqvKJLEACpbPSn\nfSmuOkobAlICItzIsGzcHJm1nko7BTFiQGYW3YlkwiUSyo6KzDfUSJ0hInD0cgmM\nSGolloIbLr4CQfQyYrawnEGpAuFhZc0KM2nfFjAKVO6vcbRm26mW40gsmzIOVT8Z\naDH8sUAbAgMBAAECggEAA9GaDLsY7rjgqzi+gTtaE0kfx7t7RMMpe337CITAAuHo\nO6QAWVW+II1t9AsM9apcjqOcF77uRWKZq5RiQLoyyoqAjAWzb7gcfM4KqIv5YuHF\nyWuvrFnkDJXXjjmcmGE5yEn7Oj5VZaMDk4T6JdEfvNBga3Skp34Snx2T7l+fNCy7\nemw6O/V6D/433YpAU3xxMcgXMs9LiUE0LzQkLIqEH/7Ji4A+jZbZKXIzMxzJSxAG\nMRhC6hBVr9uTXdK7GlyJ7fDCYdEXRiF6cNxpAZdpPY6m5D3xTR8pIh/VYO57OVEV\nWjlyYpXawZvCG+jPPtqiGSQ7MNNu8ZlBf0/TsI1VKQKBgQDyO7+rgBNY6as+6Mlg\nhiwIyD5TW57TlBXR5OujeoHXqaXsL1Bd+J4ehmLVDpHNIJdhoYrTZNE74L0ANgee\nFy5Gq0XHmpPY9cyrrYSDdJekkqY6wWM+aUU/i9j9ydD0cgmr9oPj6l8sk43PZ8zW\nqNpqzxi0SwaIbUFqUpTa3r5IyQKBgQDkTn3Imus7AHR4LGmG08PqHrqjl0Y6/mqY\nVuGno7aINNVDLVu1inxt3oo56+K+xC2sJkIAOjlv1bkUM3kKEHppQ9Ff8ywhD5r3\nCqlp1wWIIiKLO2HZdXv8jL0wCTYW9wavUSlBqtstkWbzKIEk+HrK0XECWzNDa8c9\n8izyDCfXwwKBgHmaTQpHbW8BPxqBujZepNRz0fX+1Kjaemm4RiL3aR9e5xC+X9YM\n7TPdutfCTKdxaQ12Dz84KWGp3LeyZ/iRIoYPjSQ7EWWlX23/2bo0WbwgcpqkYrH+\nHulbxz8AhYlxhjFxu5w7GDREjrhEH6zTb3KXLIu17j2mu2QouNl3YIchAoGBAONo\nZ5Ps88fmcRzOqCI7RxcpmqCear8Schzh1Y1E3ekYLyDlykau9bf+hdKh6k44XIHv\n7agKVvHVga/kgXkL5tJ5UdFwB5G62JGgFhWtrv3lemETOikABAsQKNXzJuSDFC6G\n+kBFrmHaRiCIRPMNakohip5dN1e9wE0sr6Y9g2Y/AoGAYLytWdUzGFKcw1batRwG\n5+F83f9hMoS8PHkMmZk5wawu/7LAF2rpcSX3smhfSSqZO6DogNw9Ymhw0ngk9tKq\nh1h9BMFBlzReRbLPo91JyEApss7fIfC2mQN2Wh3RrxQxEo/ICy3yKHsZwavs168k\nr2tBFLdGnW7QknBUT8xrla0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "iap-verification-service@helloglyco.iam.gserviceaccount.com",
+  "client_id": "104164459394854793060",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/iap-verification-service%40helloglyco.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

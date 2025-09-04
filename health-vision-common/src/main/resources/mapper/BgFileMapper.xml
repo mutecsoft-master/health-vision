@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.BgFileMapper">
+
+    <insert id="insertBgFile" parameterType="com.mutecsoft.healthvision.common.model.BgFile" useGeneratedKeys="true"
+            keyProperty="bgFileId" keyColumn="bg_file_id">
+        INSERT INTO TB_BG_FILE(
+        FILE_NM
+        , FILE_PATH
+        , ORIGIN_FILE_NM
+        , FILE_SIZE
+        , RECORD_START_DATE
+        , RECORD_END_DATE
+        , USER_ID
+        , REG_ID
+        , REG_DT
+        , UPD_ID
+        , UPD_DT
+        )VALUES (
+        #{fileNm}
+        , #{filePath}
+        , #{originFileNm}
+        , #{fileSize}
+        , #{recordStartDate}
+        , #{recordEndDate}
+        , #{userId}
+        , #{userId}
+        , NOW()
+        , #{userId}
+        , NOW()
+        )
+    </insert>
+
+    <select id="selectBgFileList" parameterType="com.mutecsoft.healthvision.common.dto.web.BgFileDto$SearchBgFile"  resultType="com.mutecsoft.healthvision.common.model.BgFile">
+        SELECT BG_FILE_ID
+        , FILE_NM
+        , FILE_PATH
+        , ORIGIN_FILE_NM
+        , FILE_SIZE
+        , RECORD_START_DATE
+        , RECORD_END_DATE
+        , USER_ID
+        , REG_ID
+        , REG_DT
+        , UPD_ID
+        , UPD_DT
+        FROM TB_BG_FILE
+        WHERE USER_ID = #{searchParam.userId}
+        <if test="@MBUtil@isNotEmpty(searchParam.searchFileName)">
+            AND ORIGIN_FILE_NM LIKE CONCAT('%', #{searchParam.searchFileName}, '%')
+        </if>
+        <if test="@MBUtil@isNotEmpty(searchParam.searchSize)">
+            AND FILE_SIZE = #{searchParam.searchSize}
+        </if>
+        <if test="@MBUtil@isNotEmpty(searchParam.searchRecordStartDate)">
+            AND RECORD_START_DATE = #{searchParam.searchRecordStartDate}
+        </if>
+        <if test="@MBUtil@isNotEmpty(searchParam.searchRecordEndDate)">
+            AND RECORD_END_DATE = #{searchParam.searchRecordEndDate}
+        </if>
+        <if test="@MBUtil@isNotEmpty(searchParam.searchRegDt)">
+            AND DATE(REG_DT) = #{searchParam.searchRegDt}
+        </if>
+        <if test="@MBUtil@isNotEmpty(searchParam.orderColumn) and @MBUtil@isNotEmpty(searchParam.orderDirection)">
+            ORDER BY
+            <choose>
+                <when test="searchParam.orderColumn == 'originFileNm'"> ORIGIN_FILE_NM </when>
+                <when test="searchParam.orderColumn == 'fileSize'"> FILE_SIZE </when>
+                <when test="searchParam.orderColumn == 'recordStartDate'"> RECORD_START_DATE </when>
+                <when test="searchParam.orderColumn == 'recordEndDate'"> RECORD_END_DATE </when>
+                <when test="searchParam.orderColumn == 'regDt'"> REG_DT </when>
+                <otherwise> REG_DT </otherwise>
+            </choose>
+            <choose>
+                <when test="searchParam.orderDirection == 'asc'"> ASC </when>
+                <when test="searchParam.orderDirection == 'desc'"> DESC </when>
+                <otherwise> DESC </otherwise>
+            </choose>
+        </if>
+        <if test="pageable.pageSize != null and pageable.offset != null">
+            LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+        </if>
+    </select>
+
+    <select id="selectBgFileListCnt" parameterType="com.mutecsoft.healthvision.common.dto.web.BgFileDto$SearchBgFile" resultType="Integer">
+        SELECT COUNT(*)
+        FROM TB_BG_FILE
+        WHERE USER_ID = #{userId}
+        <if test="@MBUtil@isNotEmpty(searchFileName)">
+            AND ORIGIN_FILE_NM LIKE CONCAT('%', #{searchFileName}, '%')
+        </if>
+        <if test="@MBUtil@isNotEmpty(searchSize)">
+            AND FILE_SIZE = #{searchSize}
+        </if>
+        <if test="@MBUtil@isNotEmpty(searchRecordStartDate)">
+            AND RECORD_START_DATE = #{searchRecordStartDate}
+        </if>
+        <if test="@MBUtil@isNotEmpty(searchRecordEndDate)">
+            AND RECORD_END_DATE = #{searchRecordEndDate}
+        </if>
+        <if test="@MBUtil@isNotEmpty(searchRegDt)">
+            AND REG_DT = #{searchRegDt}
+        </if>
+    </select>
+    
+    <select id="selectBgFileListForApi" parameterType="com.mutecsoft.healthvision.common.dto.web.BgFileDto$BgFileSearchRequest" resultType="com.mutecsoft.healthvision.common.dto.web.BgFileDto$BgFileResponse">
+        SELECT 
+            BF.BG_FILE_ID
+            , BF.FILE_NM
+            , BF.FILE_PATH
+            , BF.ORIGIN_FILE_NM
+            , BF.FILE_SIZE
+            , BF.RECORD_START_DATE
+            , BF.RECORD_END_DATE
+            , BF.USER_ID
+            , BF.REG_ID
+            , BF.REG_DT
+            , BF.UPD_ID
+            , BF.UPD_DT
+            , REPORT.STATUS_CD AS REPORT_STATUS_CD
+        FROM TB_BG_FILE BF
+        LEFT JOIN TB_REPORT REPORT
+        ON BF.BG_FILE_ID = REPORT.BG_FILE_ID
+        WHERE BF.USER_ID = #{userId}
+        ORDER BY BF.BG_FILE_ID DESC
+        <if test='@MBUtil@isNotEmpty(limit)'>
+        LIMIT #{limit}
+        </if>
+    </select>
+    
+    
+    
+    
+    <select id="selectBgFileById" parameterType="Long" resultType="com.mutecsoft.healthvision.common.model.BgFile">
+        SELECT 
+            BF.BG_FILE_ID
+            , BF.FILE_NM
+            , BF.FILE_PATH
+            , BF.ORIGIN_FILE_NM
+            , BF.FILE_SIZE
+            , BF.RECORD_START_DATE
+            , BF.RECORD_END_DATE
+            , BF.USER_ID
+            , BF.REG_ID
+            , BF.REG_DT
+            , BF.UPD_ID
+            , BF.UPD_DT
+        FROM TB_BG_FILE BF
+        WHERE BG_FILE_ID = #{bgFileId}
+    </select>
+</mapper>

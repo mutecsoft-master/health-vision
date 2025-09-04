@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html 
+  xmlns:th="http//www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}"
+  th:with="bodyClass='hold-transition sidebar-mini layout-fixed'">
+<head>
+  <meta charset="UTF-8">
+  <title>리포트관리</title>
+</head>
+
+<th:block layout:fragment="content">
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">리포트목록</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item">Home</li>
+              <li class="breadcrumb-item">리포트목록</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">검색 조건</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <form id="searchForm">
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" class="form-control" id="searchAplyEmail" name="searchAplyEmail">
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>리포트 신청일</label>
+                        <div class="input-group date" id="searchAplyDateInput" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#searchAplyDateInput" data-toggle="datetimepicker" id="searchAplyDate" name="searchAplyDate"/>
+                          <div class="input-group-append" data-target="#searchAplyDateInput" data-toggle="datetimepicker">
+                              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>분석가 Email</label>
+                        <input type="text" class="form-control" id="searchAnlysEmail" name="searchAnlysEmail">
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>분석일</label>
+                        <div class="input-group date" id="searchAnlysDateInput" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#searchAnlysDateInput" data-toggle="datetimepicker" id="searchAnlysDate" name="searchAnlysDate"/>
+                          <div class="input-group-append" data-target="#searchAnlysDateInput" data-toggle="datetimepicker">
+                              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchStatusCd">상태</label>
+                        <select class="form-control" id="searchStatusCd" name="searchStatusCd">
+                          <option value="">전체</option>
+                          <option value="A">신청</option>
+                          <option value="C">분석완료</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchPurchaseStatusCd">결제상태</label>
+                        <select class="form-control" id="searchPurchaseStatusCd" name="searchPurchaseStatusCd">
+                          <option value="">전체</option>
+                          <option value="U">미결제</option>
+                          <option value="P">결제대기</option>
+                          <option value="C">결제완료</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                  </div>
+
+                  <!-- 버튼 row -->
+                  <div class="row">
+                    <div class="col text-right">
+                      <button type="button" class="btn btn-secondary mr-2" data-action="form-reset">초기화</button>
+                      <button type="button" class="btn btn-primary" id="btnSearch">조회</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+            <div class="card">
+              <div class="card-header d-flex align-items-center">
+                <h3 class="card-title mb-0">검색 결과</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="mainTable" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th class="text-center">
+                      <input type="checkbox" class="" id="chkAll">
+                    </th>
+                    <th>Email</th>
+                    <th>측정 시작일</th>
+                    <th>측정 종료일</th>
+                    <th>리포트 신청일</th>
+                    <th>상태</th>
+                    <th>결제상태</th>
+                    <th>분석가 Email</th>
+                    <th>분석일</th>
+                    <th>리포트 등록</th>
+                    <th>리포트 다운로드</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    
+                  </tr>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+
+  <input type="file" id="hiddenFileInput" style="display:none;" accept=".pdf"  />
+
+
+</th:block>
+
+<th:block layout:fragment="extraJs">
+  <script>
+
+    var table;
+    $(function () { 
+
+      //Date picker
+      $('#searchAplyDateInput, #searchAnlysDateInput').datetimepicker({
+        format: 'YYYY-MM-DD'
+      });
+
+      //Datetable
+      table = $('#mainTable').DataTable({
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        ordering: false,
+        searching: false,
+        autoWidth: false,
+        ajax: {
+          url: '/admin/report/reportList/data',
+          type: 'GET',
+          data: function (d) {
+
+            //Pageable 객체에 맞게 변환
+            d.page = Math.floor(d.start / d.length);
+            d.size = d.length;
+
+            //검색 파라미터 직렬화
+            var formArray = $('#searchForm').serializeArray();
+            formArray.forEach(function(item) {
+              d[item.name] = item.value;
+            });
+          },
+          error: function(xhr, textStatus, errorThrown) {
+            const response = xhr.responseJSON;
+            const errorMsg = response?.message;
+            showCustomAlert(errorMsg);
+
+            //DataTables가 자동 생성하는 로딩 인디케이터(Processing...) 숨김 처리
+            //$('#mainTable_processing').hide();
+            
+          },
+        },
+        columns: [
+          { 
+            data: 'reportId',
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+              return '<input type="checkbox" class="row-checkbox" value="' + row.reportId + '">';
+            }
+          },
+          { data: 'aplyEmail' },
+          { data: 'recordStartDate' },
+          { data: 'recordEndDate' },
+          { data: 'aplyDate' },
+          { data: 'statusNm'},
+          { data: 'purchaseStatusNm'},
+          { data: 'anlysEmail' },
+          { data: 'anlysDate' },
+          {
+            data: null,
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+              var uploadBtnHtml = '';
+              var deleteBtnHtml = '';
+              if(!row.reportFileId) {
+                uploadBtnHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="uploadReport(' + row.reportId + ');">등록</button>';
+              }else {
+                uploadBtnHtml = '<button type="button" class="btn btn-sm btn-warning" onclick="uploadReport(' + row.reportId + ');">수정</button>';
+                deleteBtnHtml = '<button type="button" class="btn btn-sm btn-danger" onclick="deleteReport(' + row.reportId + ');">삭제</button>';
+              }
+
+              return uploadBtnHtml + deleteBtnHtml;
+            }
+          },
+          {
+            data: null,
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+              if(row.reportFileId) {
+                return '<button type="button" class="btn btn-sm btn-success" onclick="downloadReport(' + row.reportFileId + ');">다운로드</button>';
+              }else {
+                return '';
+              }
+            }
+          }
+        ],
+        drawCallback: function(settings) {
+          $('#chkAll').prop('checked', false);
+        }
+      });
+
+      //조회 버튼
+      $('#btnSearch').on('click', function(e) {
+        table.ajax.reload();
+      });
+
+
+    });
+
+
+    //리포트 업로드
+    function uploadReport(reportId) {
+      // 파일 첨부 창 열기
+      const fileInput = $('#hiddenFileInput');
+      fileInput.data('report-id', reportId);
+      fileInput.trigger('click');
+    };
+
+    $('#hiddenFileInput').on('change', function() {
+      const fileInput = $(this);
+
+      const reportId = $(this).data('report-id');
+      const file = this.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('reportId', reportId);
+
+      $.ajax({
+        url: '/admin/report/upload',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+          table.ajax.reload();
+          fileInput.val(''); //input 초기화
+        },
+        error: function() {
+          showCustomAlert("업로드 실패");
+        }
+      });
+    });
+
+    //리포트 다운로드
+    function downloadReport(reportFileId) {
+      const downloadForm = document.createElement('form');
+      downloadForm.setAttribute('id', 'downloadForm');
+      downloadForm.setAttribute('method', 'GET');
+      downloadForm.setAttribute('action', '/admin/report/download');
+      downloadForm.style.display = 'none';
+
+      const input = document.createElement('input');
+      input.setAttribute('type', 'hidden');
+      input.setAttribute('name', 'reportFileId');
+      input.setAttribute('value', reportFileId);
+      downloadForm.appendChild(input);
+
+      document.body.appendChild(downloadForm);
+      downloadForm.submit();
+      downloadForm.remove();
+    }
+
+    //리포트 삭제
+    function deleteReport(reportId) {
+      if(confirm('삭제하시겠습니까?')) {
+        $.ajax({
+          url: '/admin/report/delete?reportId=' + reportId,
+          type: 'DELETE',
+          success: function(response) {
+            table.ajax.reload();
+          },
+          error: function() {
+            showCustomAlert("리포트 삭제 실패");
+          }
+        });
+      } 
+      
+    }
+
+  </script>
+</th:block>
+</html>

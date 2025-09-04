@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.AHealthMapper">
+
+    <!--
+        건강 데이터 관련 공통 조회 컬럼
+        TBF : TB_BG_FILE
+    -->
+    
+    <sql id="bgFileColumn">
+        TBF.BG_FILE_ID
+        , TBF.FILE_NM
+        , TBF.FILE_PATH
+        , TBF.ORIGIN_FILE_NM
+        , TBF.FILE_SIZE
+        , TBF.RECORD_START_DATE
+        , TBF.RECORD_END_DATE
+        , TBF.USER_ID
+        , TBF.REG_ID
+        , TBF.REG_DT
+        , TBF.UPD_ID
+        , TBF.UPD_DT
+    </sql>
+
+    <select id="selectBgFileList" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminBgDto$SearchBgFile" resultType="com.mutecsoft.healthvision.common.dto.web.BgFileDto$BgFileResponse">
+        SELECT
+            <include refid="bgFileColumn"/>
+            , TRE.STATUS_CD AS REPORT_STATUS_CD
+            , TU.EMAIL AS EMAIL
+            , DATE(TRE.APLY_DT) AS APLY_DATE
+        FROM TB_BG_FILE TBF
+        LEFT JOIN TB_USER TU
+        ON TBF.USER_ID = TU.USER_ID
+        LEFT JOIN TB_REPORT TRE
+        ON TBF.BG_FILE_ID = TRE.BG_FILE_ID
+        WHERE 1=1
+        <if test='@MBUtil@isNotEmpty(searchParam.searchEmail)'>
+            AND TU.EMAIL LIKE CONCAT('%', #{searchParam.searchEmail}, '%')
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchRecordStartDate)'>
+            <![CDATA[
+            AND DATE(TBF.RECORD_START_DATE) >= STR_TO_DATE(#{searchParam.searchRecordStartDate}, '%Y-%m-%d')
+            ]]>
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchRecordEndDate)'>
+            <![CDATA[
+            AND DATE(TBF.RECORD_START_DATE) <= STR_TO_DATE(#{searchParam.searchRecordEndDate}, '%Y-%m-%d')
+            ]]>
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchReportApplyDate)'>
+            AND DATE(TRE.APLY_DT) = #{searchParam.searchReportApplyDate}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchReportStatusCd)'>
+            AND TRE.STATUS_CD = #{searchParam.searchReportStatusCd}
+        </if>
+        ORDER BY TRE.BG_FILE_ID DESC
+        <if test="pageable.pageSize != null and pageable.offset != null">
+            LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+        </if>
+    </select>
+    
+    <select id="selectBgFileListCnt" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminBgDto$SearchBgFile" resultType="Integer">
+        SELECT COUNT(*) AS TOTAL_CNT
+        FROM TB_BG_FILE TBF
+        LEFT JOIN TB_USER TU
+        ON TBF.USER_ID = TU.USER_ID
+        LEFT JOIN TB_REPORT TRE
+        ON TBF.BG_FILE_ID = TRE.BG_FILE_ID
+        WHERE 1=1
+        <if test='@MBUtil@isNotEmpty(searchParam.searchEmail)'>
+            AND TU.EMAIL LIKE CONCAT('%', #{searchParam.searchEmail}, '%')
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchRecordStartDate)'>
+            <![CDATA[
+            AND DATE(TBF.RECORD_START_DATE) >= STR_TO_DATE(#{searchParam.searchRecordStartDate}, '%Y-%m-%d')
+            ]]>
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchRecordEndDate)'>
+            <![CDATA[
+            AND DATE(TBF.RECORD_START_DATE) <= STR_TO_DATE(#{searchParam.searchRecordEndDate}, '%Y-%m-%d')
+            ]]>
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchReportApplyDate)'>
+            AND DATE(TRE.APLY_DT) = #{searchParam.searchReportApplyDate}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchReportStatusCd)'>
+            AND TRE.STATUS_CD = #{searchParam.searchReportStatusCd}
+        </if>
+    </select>
+    
+    <select id="selectBgFileById" parameterType="Long" resultType="com.mutecsoft.healthvision.common.dto.web.BgFileDto$BgFileResponse">
+        SELECT
+            <include refid="bgFileColumn"/>
+            , TRE.STATUS_CD
+            , TU.EMAIL AS EMAIL
+            , DATE(TRE.APLY_DT) AS APLY_DATE
+        FROM TB_BG_FILE TBF
+        LEFT JOIN TB_USER TU
+        ON TBF.USER_ID = TU.USER_ID
+        LEFT JOIN TB_REPORT TRE
+        ON TBF.BG_FILE_ID = TRE.BG_FILE_ID
+        WHERE TBF.BG_FILE_ID = #{bgFileId}
+    </select>
+    
+    <select id="selectFoodDiaryForExcelDownload" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminHealthDto$SearchForDataDownload" resultType="com.mutecsoft.healthvision.common.dto.admin.AdminHealthDto$FoodDiaryForDataDownload">
+        SELECT
+            TFD.FOOD_DIARY_ID
+            , TFD.FOOD_NM
+            , TFD.CALORIES
+            , TFD.FOOD_FILE_ID
+            , TFD.FOOD_DESC
+            , TFD.MEAL_TYPE_CD
+            , TFD.MEAL_DT
+            , TFD.USER_ID
+            , TFD.REG_ID
+            , TFD.REG_DT
+            , TFD.UPD_ID
+            , TFD.UPD_DT
+        FROM TB_FOOD_DIARY TFD
+        WHERE TFD.USER_ID = #{userId}
+        AND DATE(TFD.MEAL_DT) BETWEEN #{startDate} AND #{endDate}
+        ORDER BY TFD.MEAL_DT DESC
+    </select>
+    
+    <select id="selectWorkoutForExcelDownload" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminHealthDto$SearchForDataDownload" resultType="com.mutecsoft.healthvision.common.dto.admin.AdminHealthDto$WorkoutForDataDownload">
+        SELECT
+            TWD.WORKOUT_DATA_ID
+            , TWD.ACTIVITY_TYPE
+            , TWD.DURATION
+            , TWD.START_DT
+            , TWD.END_DT
+            , TWD.BURNED_CALORIES
+            , TWD.USER_ID
+            , TWD.REG_ID
+            , TWD.REG_DT
+        FROM TB_WORKOUT_DATA TWD
+        WHERE TWD.USER_ID = #{userId}
+        <![CDATA[
+        AND TWD.START_DT >= STR_TO_DATE(#{startDate}, '%Y-%m-%d')
+        AND TWD.START_DT < DATE_ADD(STR_TO_DATE(#{endDate}, '%Y-%m-%d'), INTERVAL 1 DAY)
+        ]]>
+        ORDER BY TWD.START_DT DESC
+    </select>
+    
+    <select id="selectSleepForExcelDownload" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminHealthDto$SearchForDataDownload" resultType="com.mutecsoft.healthvision.common.dto.admin.AdminHealthDto$SleepForDataDownload">
+        SELECT
+            TSD.SLEEP_DATA_ID
+            , TSD.CATEGORY
+            , TSD.START_DT
+            , TSD.END_DT
+            , TSD.USER_ID
+            , TSD.REG_ID
+            , TSD.REG_DT
+        FROM TB_SLEEP_DATA TSD
+        WHERE TSD.USER_ID = #{userId}
+        <![CDATA[
+        AND TSD.START_DT >= STR_TO_DATE(#{startDate}, '%Y-%m-%d')
+        AND TSD.START_DT < DATE_ADD(STR_TO_DATE(#{endDate}, '%Y-%m-%d'), INTERVAL 1 DAY)
+        ]]>
+        ORDER BY TSD.START_DT DESC
+        
+    </select>
+    
+    <select id="selectHeartRateForExcelDownload" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminHealthDto$SearchForDataDownload" resultType="com.mutecsoft.healthvision.common.dto.admin.AdminHealthDto$HeartRateForDataDownload">
+        SELECT
+            THD.HR_DATA_ID
+            , THD.VALUE
+            , THD.RECORD_DT
+            , THD.USER_ID
+            , THD.REG_ID
+            , THD.REG_DT
+        FROM TB_HR_DATA THD
+        WHERE THD.USER_ID = #{userId}
+        AND DATE(THD.RECORD_DT) BETWEEN #{startDate} AND #{endDate}
+        ORDER BY THD.RECORD_DT DESC
+    </select>
+    
+    <select id="selectBloodGlucoseForExcelDownload" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminHealthDto$SearchForDataDownload" resultType="com.mutecsoft.healthvision.common.dto.admin.AdminHealthDto$BloodGlucoseForDataDownload">
+        SELECT
+            TBD.BG_DATA_ID
+            , TBD.VALUE
+            , TBD.UNIT
+            , TBD.RECORD_DT
+            , TBD.DEVICE_ID
+            , TBD.USER_ID
+            , TBD.REG_ID
+            , TBD.REG_DT
+        FROM TB_BG_DATA TBD
+        WHERE TBD.BG_FILE_ID = #{bgFileId}
+        ORDER BY TBD.RECORD_DT DESC
+    </select>
+    
+    
+    
+</mapper>

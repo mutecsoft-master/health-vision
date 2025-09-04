@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html 
+  xmlns:th="http//www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}"
+  th:with="bodyClass='hold-transition sidebar-mini layout-fixed'">>
+<head>
+  <meta charset="UTF-8">
+  <title>공지사항관리</title>
+</head>
+<body layout:fragment="content">
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">공지사항목록</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item">Home</li>
+              <li class="breadcrumb-item">공지사항목록</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">검색 조건</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <form id="searchForm">
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchTitle">제목</label>
+                        <input type="text" class="form-control" id="searchTitle" name="searchTitle">
+                      </div>
+                    </div>
+
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchContent">내용</label>
+                        <input type="text" class="form-control" id="searchContent" name="searchContent">
+                      </div>
+                    </div>
+
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchLang">언어</label>
+                        <select class="form-control" id="searchLang" name="searchLang">
+                          <option value="">전체</option>
+                          <option value="ko">한국어</option>
+                          <option value="en">English</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchLang">삭제 여부</label>
+                        <select class="form-control" id="searchDel" name="searchDel">
+                          <option value="">전체</option>
+                          <option value="Y">Y</option>
+                          <option value="N">N</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchRegDt">등록일</label>
+                        <div class="input-group date" id="searchRegDateInput" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#searchRegDateInput" data-toggle="datetimepicker" id="searchRegDate" name="searchRegDate"/>
+                          <div class="input-group-append" data-target="#searchRegDateInput" data-toggle="datetimepicker">
+                              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 버튼 row -->
+                  <div class="row">
+                    <div class="col text-right">
+                      <button type="button" class="btn btn-secondary mr-2" data-action="form-reset">초기화</button>
+                      <button type="button" class="btn btn-primary" id="btnSearch">조회</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+            <div class="card">
+              <div class="card-header d-flex align-items-center">
+                <h3 class="card-title mb-0">검색 결과</h3>
+                <button id="btnCreate" class="btn btn-primary ml-auto mr-2">등록</button>
+                <button id="btnDelete" class="btn btn-danger">삭제</button>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="mainTable" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th class="text-center">
+                      <input type="checkbox" class="" id="chkAll">
+                    </th>
+                    <th>제목</th>
+                    <th>내용</th>
+                    <th>언어</th>
+                    <th>삭제여부</th>
+                    <th>등록일</th>
+                    <th>수정일</th>
+                    <th>수정</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+        
+                  </tr>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+    </section>
+  </div>
+
+
+  <!-- modal-account -->
+  <div class="modal fade" id="noticeModal">
+    <div class="modal-dialog modal-lg">
+      <!-- modal-content -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="noticeModalTitle" class="modal-title"></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="userId">제목</label>
+                <input type="text" id="title" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>언어</label>
+                <select id="lang" class="form-control">
+                  <option value="ko">한국어</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="userName">내용</label>
+                <textarea id="content" class="form-control" rows="3"></textarea>
+              </div>
+
+              <div class="form-group" id="delYnDiv">
+                <label>삭제여부</label>
+                <select id="delYn" class="form-control">
+                  <option value="N">N</option>
+                  <option value="Y">Y</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btnActionModal" class="btn btn-primary ml-auto mr-2"></button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal-account -->
+   
+</body>
+
+<th:block layout:fragment="extraJs">
+  <script>
+
+    var table;
+    $(function () { 
+      //Date picker
+      $('#searchRegDateInput').datetimepicker({
+        format: 'YYYY-MM-DD'
+      });
+
+      //Datetable
+      table = $('#mainTable').DataTable({
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        ordering: false,
+        searching: false,
+        autoWidth: false,
+        ajax: {
+          url: '/admin/notice/noticeList/data',
+          type: 'GET',
+          data: function (d) {
+
+            //Pageable 객체에 맞게 변환
+            d.page = Math.floor(d.start / d.length);
+            d.size = d.length;
+
+            //검색 파라미터 직렬화
+            var formArray = $('#searchForm').serializeArray();
+            formArray.forEach(function(item) {
+              d[item.name] = item.value;
+            });
+          }
+        },
+        columns: [
+          { 
+            data: 'noticeId',
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+              return '<input type="checkbox" class="row-checkbox" value="' + row.noticeId + '">';
+            }
+          },
+          { data: 'title' },
+          { data: 'content' },
+          { data: 'lang' },
+          { data: 'delYn' },
+          { data: 'regDate' },
+          { data: 'updDate' },
+          {
+            data: null,
+            className: 'text-center',
+            render: function (data, type, row, meta) {
+              return `<button class="btn btn-sm btn-warning btn-edit" data-notice-id="${row.noticeId}">수정</button>`
+            }
+          }
+        ],
+        drawCallback: function(settings) {
+          $('#chkAll').prop('checked', false);
+        }
+      });
+
+      //조회 버튼
+      $('#btnSearch').on('click', function(e) {
+        table.ajax.reload();
+      });
+
+      //삭제버튼
+      $('#btnDelete').on('click', function() {
+        const noticeIdList = $('.row-checkbox:checked').map(function () {
+          return Number($(this).val());
+        }).get();
+
+        if (noticeIdList.length === 0) {
+          showCustomAlert('삭제할 공지사항을 선택하세요.');
+          return;
+        }
+
+        if(confirm('삭제하시겠습니까?')){
+          $.ajax({
+            url: '/admin/notice/noticeList',
+            method: 'DELETE',
+            contentType: 'application/json',
+            data: JSON.stringify(noticeIdList),
+            success: function (result, xhr) {
+              table.ajax.reload();
+            },
+            error: function (xhr) {
+              const resJson = xhr.responseJSON;
+              console.error(resJson.resultCd, ": ", resJson.message);
+              showCustomAlert('삭제 실패');
+            }
+          });
+        }
+      });
+
+      //등록 버튼
+      $('#btnCreate').on('click', function() {
+        $('#title').val('');
+        $('#lang').val('ko');
+        $('#content').val('');
+        $('#delYnDiv').hide();
+
+        $('#noticeModalTitle').text('공지사항 등록');
+        $('#btnActionModal')
+        .text('등록')
+        .off('click')
+        .on('click', function () {
+          createNotice();
+        });
+
+        $('#noticeModal').modal('show');
+      });
+
+
+
+      //수정 버튼
+      $('#mainTable').on('click', '.btn-edit', function () {
+
+        const tr = $(this).closest('tr');
+        const rowData = table.row(tr.hasClass('child') ? tr.prev('tr') : tr).data(); //반응형으로 tr이 늘어나는 경우 대비
+
+        $('#title').val(rowData.title);
+        $('#content').val(rowData.content);
+        $('#lang').val(rowData.lang);
+        $('#delYn').val(rowData.delYn);
+        $('#delYnDiv').show();
+
+        $('#noticeModalTitle').text('공지사항 수정');
+        $('#btnActionModal')
+          .text('수정')
+          .off('click')
+          .on('click', function () {
+            updateNotice(rowData.noticeId);
+          });
+
+        $('#noticeModal').modal('show');
+      });
+
+    });
+
+    //공지사항 등록
+    function createNotice() {
+      const title = $('#title').val().trim();
+      const content = $('#content').val().trim();
+      const lang = $('#lang').val();
+
+      if (!title || !content) {
+        showCustomAlert('제목 또는 내용을 입력해주세요.');
+        return;
+      }
+
+      const data = {
+        title: title,
+        content: content,
+        lang: lang,
+      };
+
+      $.ajax({
+        url: '/admin/notice',
+        method: 'POST',
+        data: data,
+        success: function() {
+          table.ajax.reload();
+          $('#noticeModal').modal('hide');
+        },
+        error: function(xhr) {
+          const resJson = xhr.responseJSON;
+          console.error(resJson.message);
+          showCustomAlert('등록 실패.');
+        }
+      });
+    };
+
+    //공지사항 수정
+    function updateNotice(noticeId) {
+      const title = $('#title').val().trim();
+      const content = $('#content').val().trim();
+      const lang = $('#lang').val();
+      const delYn = $('#delYn').val();
+
+      if (!title || !content) {
+        showCustomAlert('제목 또는 내용을 입력해주세요.');
+        return;
+      }
+
+      const data = {
+        noticeId: Number(noticeId),
+        title: title,
+        content: content,
+        lang: lang,
+        delYn: delYn,
+      };
+
+      $.ajax({
+        url: '/admin/notice',
+        method: 'PUT',
+        data: data,
+        success: function() {
+          table.ajax.reload();
+          $('#noticeModal').modal('hide');
+        },
+        error: function(xhr) {
+          const resJson = xhr.responseJSON;
+          console.error(resJson.message);
+          showCustomAlert('수정 실패.');
+        }
+      });
+    };
+  </script>
+</th:block>
+</html>

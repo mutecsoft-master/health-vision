@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.FileMapper">
+
+    <!--
+        File 관련 공통 조회 컬럼
+        TF : TB_FILE 
+    -->
+    <sql id="fileColumn">
+        TF.FILE_ID
+        , TF.FILE_GROUP_ID
+        , TF.FILE_CATE_CD
+        , TF.FILE_NM
+        , TF.FILE_PATH
+        , TF.ORIGIN_FILE_NM
+        , TF.FILE_SIZE
+        , TF.REG_ID
+        , TF.REG_DT
+        , TF.UPD_ID
+        , TF.UPD_DT
+    </sql>
+
+
+    <insert id="insertFile" parameterType="com.mutecsoft.healthvision.common.model.FileModel" useGeneratedKeys="true" keyProperty="fileId" keyColumn="file_id">
+        INSERT INTO TB_FILE(
+            FILE_GROUP_ID
+            , FILE_CATE_CD
+            , FILE_NM
+            , FILE_PATH
+            , ORIGIN_FILE_NM
+            , FILE_SIZE
+            , REG_ID
+            , REG_DT
+            , UPD_ID
+            , UPD_DT
+        )VALUES (
+            #{fileGroupId}
+            , #{fileCateCd}
+            , #{fileNm}
+            , #{filePath}
+            , #{originFileNm}
+            , #{fileSize}
+            , #{regId}
+            , NOW()
+            , #{updId}
+            , NOW()
+        )
+    </insert>
+    
+    <select id="selectFile" parameterType="Long" resultType="com.mutecsoft.healthvision.common.model.FileModel">
+        SELECT
+            <include refid="fileColumn"/>
+        FROM TB_FILE TF
+        WHERE TF.FILE_ID = #{fileId}
+    </select>
+    
+    
+    <delete id="deleteFile">
+        DELETE
+        FROM TB_FILE
+        WHERE FILE_ID = #{fileId}
+    </delete>
+
+</mapper>

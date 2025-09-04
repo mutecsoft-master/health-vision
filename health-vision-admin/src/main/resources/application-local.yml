@@ -1,0 +1,72 @@
+server:
+  port: 8090
+    
+spring:
+  mvc:
+    async:
+      request-timeout: 30000
+    static-path-pattern: /admin/static/**
+    view:
+      suffix: .html
+  datasource:
+    url: jdbc:log4jdbc:mariadb://mutec.iptime.org:3306/helloglyco?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf8&autoReconnect=true&sessionVariables=@@time_zone='+00:00'
+    username: helloglyco
+    password: glyco123!@#
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    hikari:
+      leak-detection-threshold: 60000
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5000MB
+      max-request-size: 5000MB
+  web:
+    resources:
+      static-locations: classpath:/static/
+      add-mappings: true
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: git@mutecsoft.com
+    password: 'okcl nelu lclf nybc'
+    properties:
+      mail:
+        smtp:
+          timeout: 10000 #10s
+          auth: true
+          starttls:
+            enable: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+
+mybatis:
+  type-aliases-package: com.mutecsoft.healthvision.common.model, com.mutecsoft.healthvision.common.dto
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+    default-executor-type: reuse
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  mapper-locations: classpath:mapper/*.xml
+  
+jwt:
+  access-expire-time: 5  #인증만료일자 (시간)
+  refresh-expire-day: 20  #인증만료일자 (일)
+  base64:
+    secret: mutecBase #인증암화키
+
+file:
+  base-path: /home/mutecsoft/helloglyco/upload
+  
+firebase:
+  key-path:  key/fcm/helloglyco-firebase-adminsdk-fbsvc-6b15e28ac5.json

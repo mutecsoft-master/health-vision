@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.TermsMapper">
+
+    <sql id="termsColumn">
+        TT.TERMS_ID
+        , TT.TYPE
+        , TT.VERSION
+        , TT.TITLE
+        , TT.CONTENT
+        , TT.REQUIRED_YN
+        , TT.LANG
+        , TT.REG_ID
+        , TT.REG_DT
+        , TT.UPD_ID
+        , TT.UPD_DT
+    </sql>
+
+
+    <select id="selectLastVerTemrsListByLang" resultType="com.mutecsoft.healthvision.common.model.Terms">
+        SELECT 
+            <include refid="termsColumn"/>
+        FROM TB_TERMS TT
+        JOIN (
+            SELECT TYPE, MAX(VERSION) AS MAX_VER, LANG
+            FROM TB_TERMS
+            GROUP BY TYPE, LANG
+        ) LAST
+        ON TT.TYPE = LAST.TYPE 
+            AND TT.VERSION = LAST.MAX_VER
+            AND TT.LANG = LAST.LANG
+        WHERE TT.Lang = #{lang}
+    </select>
+    
+</mapper>

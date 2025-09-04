@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.NoticeMapper">
+
+    <sql id="noticeColumn">
+        NOTICE_ID
+        , TITLE
+        , CONTENT
+        , LANG
+        , REG_ID
+        , REG_DT
+    </sql>
+
+    <select id="selectNoticeList" 
+        parameterType="com.mutecsoft.healthvision.common.dto.NoticeDto$NoticeSearchRequest"
+        resultType="com.mutecsoft.healthvision.common.model.Notice">
+        SELECT
+            <include refid="noticeColumn"/>
+        FROM TB_NOTICE
+        WHERE LANG = #{lang}
+        <![CDATA[
+            AND (#{lastNoticeId} IS NULL OR NOTICE_ID < #{lastNoticeId})
+        ]]>
+        ORDER BY NOTICE_ID DESC
+        LIMIT #{size}
+    </select>
+    
+</mapper>

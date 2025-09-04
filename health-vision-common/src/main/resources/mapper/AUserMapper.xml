@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.AUserMapper">
+
+    <!--
+        USER 관련 공통 조회 컬럼
+        TU : TB_USER 
+    -->
+    <sql id="userColumn">
+        TU.USER_ID
+        , TU.EMAIL
+        , TU.USER_PW
+        , TU.SNS_PROVIDER
+        , TU.SNS_USER_ID
+        , TU.GENDER
+        , TU.BIRTH_DATE
+        , TU.HEIGHT
+        , TU.WEIGHT
+        , TU.PROFILE_FILE_ID
+        , TU.TEMP_PW
+        , TU.TEMP_PW_EXPIRE_DT
+        , TU.NICKNAME
+        , TU.LAST_LOGIN_DT
+        , TU.DEL_YN
+        , TU.REG_DT
+        , DATE(TU.REG_DT) AS REG_DATE
+    </sql>
+
+    <select id="selectUserByEmail" parameterType="java.lang.String" resultType="com.mutecsoft.healthvision.common.model.User">
+        SELECT 
+            <include refid="userColumn"/>
+        FROM TB_USER TU
+        WHERE TU.EMAIL=#{email}
+        AND TU.DEL_YN = 'N'
+    </select>
+
+    <select id="selectUserByUserId" parameterType="java.lang.Long" resultType="com.mutecsoft.healthvision.common.model.User">
+        SELECT
+            <include refid="userColumn"/>
+        FROM TB_USER TU
+        WHERE TU.USER_ID = #{userId}
+        AND TU.DEL_YN = 'N'
+    </select>
+    
+    <update id="updateLastLoginDt" parameterType="java.lang.Long">
+        UPDATE TB_USER
+        SET LAST_LOGIN_DT=NOW()
+        WHERE USER_ID=#{userId}
+    </update>
+    
+    <select id="selectUserList" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminUserDto$SearchUser" resultType="com.mutecsoft.healthvision.common.dto.UserDto$UserInfo">
+        SELECT
+            <include refid="userColumn"/>
+        FROM TB_USER TU
+        INNER JOIN TB_USER_ROLE TUR
+            ON TUR.USER_ID = TU.USER_ID
+        INNER JOIN TB_ROLE TR
+            ON TR.ROLE_ID = TUR.ROLE_ID
+        WHERE 1=1
+        AND TR.ROLE_NM != 'ADMIN'
+        <if test='@MBUtil@isNotEmpty(searchParam.searchRoleNm)'>
+            AND TR.ROLE_NM = #{searchParam.searchRoleNm}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchEmail)'>
+            AND TU.EMAIL LIKE CONCAT('%', #{searchParam.searchEmail}, '%')
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchNickname)'>
+            AND TU.NICKNAME LIKE CONCAT('%', #{searchParam.searchNickname}, '%')
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchDelYn)'>
+            AND TU.DEL_YN = #{searchParam.searchDelYn}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchRegDate)'>
+            AND DATE(TU.REG_DT) = #{searchParam.searchRegDate}
+        </if>
+        <if test="pageable.pageSize != null and pageable.offset != null">
+            LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+        </if>
+    </select>
+    
+    <select id="selectUserListCnt" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminUserDto$SearchUser" resultType="Integer">
+        SELECT COUNT(*) AS TOTAL_CNT
+        FROM TB_USER TU
+        INNER JOIN TB_USER_ROLE TUR
+            ON TUR.USER_ID = TU.USER_ID
+        INNER JOIN TB_ROLE TR
+            ON TR.ROLE_ID = TUR.ROLE_ID
+        WHERE 1=1
+        AND TR.ROLE_NM != 'ADMIN'
+        <if test='@MBUtil@isNotEmpty(searchParam.searchRoleNm)'>
+            AND TR.ROLE_NM = #{searchParam.searchRoleNm}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchEmail)'>
+            AND TU.EMAIL LIKE CONCAT('%', #{searchParam.searchEmail}, '%')
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchNickname)'>
+            AND TU.NICKNAME LIKE CONCAT('%', #{searchParam.searchNickname}, '%')
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchRegDate)'>
+            AND DATE(TU.REG_DT) = #{searchParam.searchRegDate}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchDelYn)'>
+            AND TU.DEL_YN = #{searchParam.searchDelYn}
+        </if>
+    </select>
+    
+    <update id="updateUser" parameterType="com.mutecsoft.healthvision.common.model.User">
+        UPDATE TB_USER
+            SET NICKNAME = #{nickname},
+                <if test='@MBUtil@isNotEmpty(userPw)'>
+                    USER_PW = #{userPw},
+                </if>
+                UPD_DT = NOW(),
+                UPD_ID = #{updId}
+         WHERE USER_ID = #{userId}
+    </update>
+    
+    <update id="deleteUserList" parameterType="List">
+        UPDATE TB_USER
+        SET DEL_YN = 'Y'
+            , DEL_DT = NOW()
+            , EMAIL = CONCAT(EMAIL, #{emailSuffix})
+        WHERE USER_ID IN
+        <foreach item="userId" collection="userIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+    
+    <update id="deleteUser">
+        UPDATE TB_USER
+        SET DEL_YN = 'Y'
+            , DEL_DT = NOW()
+            , EMAIL = CONCAT(EMAIL, #{emailSuffix})
+        WHERE USER_ID = #{userId}
+    </update>
+    
+    <insert id="insertUser" parameterType="com.mutecsoft.healthvision.common.model.User">
+        INSERT INTO TB_USER (
+            EMAIL,
+            USER_PW,
+            GENDER,
+            BIRTH_DATE,
+            SNS_PROVIDER,
+            SNS_USER_ID,
+            DEL_YN,
+            REG_DT
+        ) VALUES (
+            #{email},
+            #{userPw},
+            #{gender},
+            #{birthDate},
+            #{snsProvider},
+            #{snsUserId},
+            'N',
+            NOW()
+        )
+        <selectKey resultType="Long" order="AFTER" keyProperty="userId">
+            SELECT LAST_INSERT_ID() AS userId
+        </selectKey>
+    </insert>
+
+
+</mapper>

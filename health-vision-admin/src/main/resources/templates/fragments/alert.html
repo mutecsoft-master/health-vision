@@ -1,0 +1,31 @@
+<th:block th:fragment="alert">
+  <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-hidden="true" >
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 400px; width: 90vw; margin: 0 auto;">
+      <div class="modal-content shadow-lg" style="border-radius: 12px; background-color: #d0e7ff;">
+        <div class="modal-body text-center py-2" style="color: #000; font-size: 1.2rem; word-break: break-word; overflow-wrap: break-word; white-space: pre-line; margin: 0 auto;">
+          <p th:text="${errorMessage}" class="mb-2 font-weight-bold"></p>
+          <button type="button" class="btn btn-primary font-weight-semibold d-block mx-auto" data-dismiss="modal"
+                  style="border-radius: 25px; min-width: 100px; white-space: nowrap;" th:text="#{web.confirm}">
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    let errorMessage = /*[[${errorMessage}]]*/"";
+
+    if (errorMessage) {
+      $('#alertModal').modal('show');
+    }
+    /*]]>*/
+
+
+    //ajax 용
+    function showCustomAlert(errorMessage) {
+      $("#alertModal p").text(errorMessage);
+      $('#alertModal').modal('show');
+    }
+  </script>
+</th:block>

@@ -1,0 +1,39 @@
+<th:block th:fragment="alert">
+  <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true" th:if="${!#strings.isEmpty(errorMessage)}">
+    <div class="modal-dialog modal-dialog-centered" 
+         style="
+           max-width: 400px; 
+           width: 90vw; 
+           margin: 0 auto;
+         ">
+      <div class="modal-content shadow-lg" 
+           style="border-radius: 12px; background-color: #d0e7ff;">
+        <div class="modal-body text-center py-2" 
+             style="
+               color: #000;
+               font-size: 1.2rem;
+               word-break: break-word;
+               overflow-wrap: break-word;
+               white-space: pre-line;
+               margin: 0 auto;
+             ">
+          <p th:text="${errorMessage}" class="mb-2 fw-bold"></p>
+          <button type="button" class="btn btn-primary fw-semibold d-block mx-auto" data-bs-dismiss="modal" 
+                  style="border-radius: 25px; min-width: 100px; white-space: nowrap;"
+                  th:text="#{web.confirm}">
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    let errorMessage = /*[[${errorMessage}]]*/"";
+    if (errorMessage) {
+      const alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
+      alertModal.show();
+    }
+    /*]]>*/
+  </script>
+</th:block>

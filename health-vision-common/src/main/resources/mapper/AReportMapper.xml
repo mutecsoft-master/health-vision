@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.AReportMapper">
+
+    <!--
+        REPORT 관련 공통 조회 컬럼
+        TRE : TB_REPORT 
+    -->
+    <sql id="reportColumn">
+        TRE.REPORT_ID
+        , TRE.APLY_ID
+        , TRE.APLY_DT
+        , TRE.STATUS_CD
+        , TRE.PURCHASE_STATUS_CD
+        , TRE.ANLYS_ID
+        , TRE.ANLYS_DT
+        , TRE.REPORT_FILE_ID
+        , TRE.BG_FILE_ID
+        , DATE(TRE.APLY_DT) AS APLY_DATE
+        , DATE(TRE.ANLYS_DT) AS ANLYS_DATE
+    </sql>
+
+    <select id="selectReportList" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminReportDto$SearchReport" resultType="com.mutecsoft.healthvision.common.dto.ReportV2Dto$ReportResponse">
+        SELECT
+            <include refid="reportColumn"/>
+            , APLY.EMAIL AS APLY_EMAIL
+            , ANLYS.EMAIL AS ANLYS_EMAIL
+            , FILE.ORIGIN_FILE_NM AS REPORT_FILE_NM
+            , BG_FILE.RECORD_START_DATE
+            , BG_FILE.RECORD_END_DATE
+        FROM TB_REPORT TRE
+        LEFT JOIN TB_USER APLY
+        ON TRE.APLY_ID = APLY.USER_ID
+        LEFT JOIN TB_USER ANLYS
+        ON TRE.ANLYS_ID = ANLYS.USER_ID
+        LEFT JOIN TB_FILE FILE
+        ON TRE.REPORT_FILE_ID = FILE.FILE_ID
+        LEFT JOIN TB_BG_FILE BG_FILE
+        ON TRE.BG_FILE_ID = BG_FILE.BG_FILE_ID
+        WHERE 1=1
+        <if test='@MBUtil@isNotEmpty(searchParam.searchAplyEmail)'>
+            AND APLY.EMAIL LIKE CONCAT('%', #{searchParam.searchAplyEmail}, '%')
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchAplyDate)'>
+            AND DATE(TRE.APLY_DT) = #{searchParam.searchAplyDate}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchAnlysEmail)'>
+            AND ANLYS.EMAIL LIKE CONCAT('%', #{searchParam.searchAnlysEmail}, '%')
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchAnlysDate)'>
+            AND DATE(TRE.ANLYS_DT) = #{searchParam.searchAnlysDate}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchStatusCd)'>
+            AND TRE.STATUS_CD = #{searchParam.searchStatusCd}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchPurchaseStatusCd)'>
+            AND TRE.PURCHASE_STATUS_CD = #{searchParam.searchPurchaseStatusCd}
+        </if>
+        ORDER BY TRE.REPORT_ID DESC
+        <if test="pageable.pageSize != null and pageable.offset != null">
+            LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+        </if>
+    </select>
+    
+    <select id="selectReportListCnt" parameterType="com.mutecsoft.healthvision.common.dto.admin.AdminReportDto$SearchReport" resultType="Integer">
+        SELECT COUNT(*) AS TOTAL_CNT
+        FROM TB_REPORT TRE
+        LEFT JOIN TB_USER APLY
+        ON TRE.APLY_ID = APLY.USER_ID
+        LEFT JOIN TB_USER ANLYS
+        ON TRE.ANLYS_ID = ANLYS.USER_ID
+        LEFT JOIN TB_FILE FILE
+        ON TRE.REPORT_FILE_ID = FILE.FILE_ID
+        LEFT JOIN TB_BG_FILE BG_FILE
+        ON TRE.BG_FILE_ID = BG_FILE.BG_FILE_ID
+        WHERE 1=1
+        <if test='@MBUtil@isNotEmpty(searchParam.searchAplyEmail)'>
+            AND APLY.EMAIL LIKE CONCAT('%', #{searchParam.searchAplyEmail}, '%')
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchAplyDate)'>
+            AND DATE(TRE.APLY_DT) = #{searchParam.searchAplyDate}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchAnlysEmail)'>
+            AND ANLYS.EMAIL LIKE CONCAT('%', #{searchParam.searchAnlysEmail}, '%')
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchAnlysDate)'>
+            AND DATE(TRE.ANLYS_DT) = #{searchParam.searchAnlysDate}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchStatusCd)'>
+            AND DATE(TRE.STATUS_CD) = #{searchParam.searchStatusCd}
+        </if>
+        <if test='@MBUtil@isNotEmpty(searchParam.searchPurchaseStatusCd)'>
+            AND TRE.PURCHASE_STATUS_CD = #{searchParam.searchPurchaseStatusCd}
+        </if>
+    </select>
+    
+    
+    <select id="selectReportById" parameterType="Long" resultType="com.mutecsoft.healthvision.common.model.Report">
+         SELECT
+            <include refid="reportColumn"/>
+        FROM TB_REPORT TRE
+        WHERE TRE.REPORT_ID = #{reportId}
+    </select>
+    
+    
+    <update id="updateReportFile" parameterType="com.mutecsoft.healthvision.common.model.Report">
+        UPDATE TB_REPORT
+        SET REPORT_FILE_ID = #{reportFileId}
+            , STATUS_CD = #{statusCd}
+            , ANLYS_ID = #{anlysId}
+            , ANLYS_DT = #{anlysDt}
+        WHERE REPORT_ID = #{reportId}
+    </update>
+
+
+    <update id="deleteReportFile" parameterType="com.mutecsoft.healthvision.common.model.Report">
+        UPDATE TB_REPORT
+        SET REPORT_FILE_ID = NULL
+            , STATUS_CD = #{statusCd}
+            , ANLYS_ID = NULL
+            , ANLYS_DT = NULL
+        WHERE REPORT_ID = #{reportId}
+    </update>
+
+</mapper>

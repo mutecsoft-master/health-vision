@@ -1,0 +1,146 @@
+<html
+  xmlns:th="http//www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layoutWithoutHeader}">
+
+<head>
+  <style>
+    html {
+      font-size: 120%; /* 전체 기준 폰트 확대 */
+    }
+
+    body {
+      line-height: 1.6;
+    }
+
+    .accordion-button .fw-bold {
+      font-size: 1.6rem;
+    }
+
+    .accordion-button .text-muted {
+      font-size: 1.3rem;
+    }
+
+    .accordion-body {
+      font-size: 1.4rem;
+    }
+
+    h2.mb-4.text-center {
+      font-size: 2rem;
+    }
+
+    #scrollSentinel {
+      font-size: 1.4rem;
+      padding: 2rem 0;
+    }
+
+    /* 아코디언 배경색 제거 */
+    .accordion-button:not(.collapsed) {
+      background-color: transparent !important;
+      box-shadow: none;
+    }
+    
+  </style>
+</head>
+
+<th:block layout:fragment="content">
+  
+<!-- js에서 사용할 다국어 모음 -->
+  <div id="i18n-messages"
+    th:attr="data-no-more-notices=#{web.notice.none}"
+    style="display: none;"></div>
+
+  <div class="container my-4">
+    <h2 class="mb-4 text-center" th:text="#{web.notice.list.title}">공지사항</h2>
+
+    <div class="accordion" id="noticeAccordion">
+      <th:block th:fragment="noticeListFragment">
+        <div th:each="notice : ${noticeList}" class="accordion-item" th:attr="data-id=${notice.noticeId}">
+          <h2 class="accordion-header" th:attr="id='heading-' + ${notice.noticeId}">
+            <button type="button"
+              class="accordion-button collapsed d-block text-start"
+              data-bs-toggle="collapse"
+              th:attr="data-bs-target='#collapse-' + ${notice.noticeId}, aria-controls='collapse-' + ${notice.noticeId}">
+              <div>
+                <div class="fw-bold" th:text="${notice.title}">제목</div>
+                <div class="text-muted small mt-1" th:text="${#temporals.format(notice.regDt, 'yyyy-MM-dd a HH:mm:ss')}">날짜</div>
+              </div>
+            </button>
+          </h2>
+          <div class="accordion-collapse collapse"
+            data-bs-parent="#noticeAccordion"
+            th:attr="id='collapse-' + ${notice.noticeId}, aria-labelledby='heading-' + ${notice.noticeId}">
+            <div class="accordion-body" th:utext="${notice.content}">
+              <!-- 공지 내용 -->
+            </div>
+          </div>
+        </div>
+      </th:block>
+    </div>
+
+    <div id="scrollSentinel" class="py-4 text-center text-muted"></div>
+  </div>
+</th:block>
+
+
+<script layout:fragment="extraJs">
+
+  document.addEventListener("DOMContentLoaded", function(){
+    let isLoading = false;
+
+    async function loadMoreNotices() {
+      if (isLoading) return;
+      isLoading = true;
+
+      try {
+        const lastNoticeId = document.querySelector(".accordion-item:last-of-type")?.getAttribute("data-id");
+        if (lastNoticeId) {
+          const response = await fetch(`/web/notice/list?size=10&lastNoticeId=${lastNoticeId}`);
+          const html = await response.text();
+
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+
+          const newItems = tempDiv.querySelectorAll('.accordion-item');
+
+          if (newItems.length === 0) {
+            window.removeEventListener('scroll', onScrollLoad);
+
+            const i18n = document.getElementById('i18n-messages');
+            const noMoreText = i18n?.dataset.noMoreNotices || '더 이상 공지사항이 없습니다.';
+            document.getElementById('scrollSentinel').textContent = noMoreText;
+            return;
+          }
+
+          const accordion = document.getElementById('noticeAccordion');
+          newItems.forEach(item => accordion.appendChild(item));
+        }
+      } catch (error) {
+        console.error('Error loading notices:', error);
+      } finally {
+        isLoading = false;
+      }
+    }
+
+    function onScrollLoad() {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const docHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight,
+        document.body.clientHeight,
+        document.documentElement.clientHeight
+      );
+
+      if (scrollTop + windowHeight >= docHeight - 10) {
+        loadMoreNotices();
+      }
+    }
+
+    window.addEventListener('scroll', onScrollLoad);
+  });
+</script>
+
+</html>

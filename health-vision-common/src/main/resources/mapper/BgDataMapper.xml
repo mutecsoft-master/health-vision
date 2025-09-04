@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.BgDataMapper">
+
+    <insert id="insertBgData" parameterType="com.mutecsoft.healthvision.common.model.BgData"
+            useGeneratedKeys="true" keyProperty="bgDataId" keyColumn="bg_data_id">
+        INSERT INTO TB_BG_DATA(
+        VALUE
+        , UNIT
+        , RECORD_DT
+        , DEVICE_ID
+        , USER_ID
+        , REG_ID
+        , REG_DT
+        , BG_FILE_ID
+        )VALUES
+        <foreach collection="bgDataList" item="item" separator=",">
+            (
+            #{item.value}
+            , #{item.unit}
+            , #{item.recordDt}
+            , #{item.deviceId}
+            , #{item.userId}
+            , #{item.userId}
+            , NOW()
+            , #{item.bgFileId}
+            )
+        </foreach>
+    </insert>
+</mapper>

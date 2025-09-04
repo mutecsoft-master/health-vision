@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html 
+  xmlns:th="http//www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}"
+  th:with="bodyClass='hold-transition sidebar-mini layout-fixed'">
+<head>
+  <meta charset="UTF-8">
+  <title>데이터관리</title>
+</head>
+
+<th:block layout:fragment="content">
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">데이터목록</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item">Home</li>
+              <li class="breadcrumb-item">데이터목록</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">검색 조건</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <form id="searchForm">
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" class="form-control" id="searchEmail" name="searchEmail">
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>데이터 수집일(시작)</label>
+                        <div class="input-group date" id="searchRecordStartDateInput" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#searchRecordStartDateInput" data-toggle="datetimepicker" id="searchRecordStartDate" name="searchRecordStartDate"/>
+                          <div class="input-group-append" data-target="#searchRecordStartDateInput" data-toggle="datetimepicker">
+                              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>데이터 수집일(종료)</label>
+                        <div class="input-group date" id="searchRecordEndDateInput" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#searchRecordEndDateInput" data-toggle="datetimepicker" id="searchRecordEndDate" name="searchRecordEndDate"/>
+                          <div class="input-group-append" data-target="#searchRecordEndDateInput" data-toggle="datetimepicker">
+                              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>리포트 신청일</label>
+                        <div class="input-group date" id="searchReportApplyDateInput" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#searchReportApplyDateInput" data-toggle="datetimepicker" id="searchReportApplyDate" name="searchReportApplyDate"/>
+                          <div class="input-group-append" data-target="#searchReportApplyDateInput" data-toggle="datetimepicker">
+                              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchReportStatusCd">리포트 상태</label>
+                        <select class="form-control" id="searchReportStatusCd" name="searchReportStatusCd">
+                          <option value="">전체</option>
+                          <option value="A">신청</option>
+                          <option value="P">결제완료</option>
+                          <option value="C">분석완료</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 버튼 row -->
+                  <div class="row">
+                    <div class="col text-right">
+                      <button type="button" class="btn btn-secondary mr-2" data-action="form-reset">초기화</button>
+                      <button type="button" class="btn btn-primary" id="btnSearch">조회</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+            <div class="card">
+              <div class="card-header d-flex align-items-center">
+                <h3 class="card-title mb-0">검색 결과</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="mainTable" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th class="text-center">
+                      <input type="checkbox" class="" id="chkAll">
+                    </th>
+                    <th>Email</th>
+                    <th>측정 시작일</th>
+                    <th>측정 종료일</th>
+                    <th>리포트 신청일</th>
+                    <th>리포트 상태</th>
+                    <th>데이터 다운로드</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    
+                  </tr>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+
+
+</th:block>
+
+<th:block layout:fragment="extraJs">
+  <script>
+
+    var table;
+    $(function () { 
+
+      //Date picker
+      $(`#searchRecordStartDateInput, 
+          #searchRecordEndDateInput, 
+          #searchReportApplyDateInput`).datetimepicker({
+        format: 'YYYY-MM-DD'
+      });
+
+      //Datetable
+      table = $('#mainTable').DataTable({
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        ordering: false,
+        searching: false,
+        autoWidth: false,
+        ajax: {
+          url: '/admin/health/bgFileList/data',
+          type: 'GET',
+          data: function (d) {
+
+            //Pageable 객체에 맞게 변환
+            d.page = Math.floor(d.start / d.length);
+            d.size = d.length;
+
+            //검색 파라미터 직렬화
+            var formArray = $('#searchForm').serializeArray();
+            formArray.forEach(function(item) {
+              d[item.name] = item.value;
+            });
+          },
+          error: function(xhr, textStatus, errorThrown) {
+            const response = xhr.responseJSON;
+            const errorMsg = response?.message;
+            showCustomAlert(errorMsg);
+
+          },
+        },
+        columns: [
+          { 
+            data: 'bgFileId',
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+              return '<input type="checkbox" class="row-checkbox" value="' + row.bgFileId + '">';
+            }
+          },
+          { data: 'email' },
+          { data: 'recordStartDate' },
+          { data: 'recordEndDate' },
+          { data: 'aplyDate' },
+          { data: 'reportStatusNm' },
+          {
+            data: null,
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+              return '<button type="button" class="btn btn-sm btn-success" onclick="downloadData(' + row.bgFileId + ');">다운로드</button>';
+            }
+          }
+        ],
+        drawCallback: function(settings) {
+          $('#chkAll').prop('checked', false);
+        }
+      });
+
+      //조회 버튼
+      $('#btnSearch').on('click', function(e) {
+        table.ajax.reload();
+      });
+
+
+    });
+
+
+    //데이터 다운로드
+    function downloadData(bgFileId) {
+      const downloadForm = document.createElement('form');
+      downloadForm.setAttribute('id', 'downloadForm');
+      downloadForm.setAttribute('method', 'POST');
+      downloadForm.setAttribute('action', '/admin/health/data/download');
+      downloadForm.style.display = 'none';
+
+      const input = document.createElement('input');
+      input.setAttribute('type', 'hidden');
+      input.setAttribute('name', 'bgFileId');
+      input.setAttribute('value', bgFileId);
+      downloadForm.appendChild(input);
+
+      document.body.appendChild(downloadForm);
+      downloadForm.submit();
+      downloadForm.remove();
+    }
+
+
+    
+
+  </script>
+</th:block>
+</html>

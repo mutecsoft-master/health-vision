@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+  <!-- 공통 Css -->
+  <th:block th:replace="fragments/commonCss :: commonCss"></th:block>
+</head>
+
+<body th:classappend="${bodyClass}">
+  <!-- Content -->
+  <main layout:fragment="content"></main>
+
+  <!-- 공통 Script -->
+  <th:block th:replace="fragments/commonJs :: commonJs"></th:block>
+  <!-- 개별 페이지에서 사용할 Js -->
+  <th:block layout:fragment="extraJs"></th:block>
+  
+  <!-- Alert -->
+  <div th:replace="fragments/alert :: alert"></div>
+</body>
+
+</html>

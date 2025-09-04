@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html 
+  xmlns:th="http//www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}"
+  th:with="bodyClass='hold-transition sidebar-mini layout-fixed'">
+<head>
+  <meta charset="UTF-8">
+  <title>약관관리</title>
+</head>
+
+<th:block layout:fragment="content">
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">약관목록</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item">Home</li>
+              <li class="breadcrumb-item">약관목록</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">검색 조건</h3>
+              </div>
+
+              <!-- /.card-header -->
+              <div class="card-body">
+                <form id="searchForm">
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchType">종류</label>
+                        <select class="form-control" id="searchType" name="searchType">
+                          <option value="">전체</option>
+                          <option value="SERVICE">서비스 이용약관</option>
+                          <option value="PRIVACY">개인정보 처리방침</option>
+                          <option value="PROFILE">프로필정보 추가 수집 동의</option>
+                          <option value="MARKETING">마케팅 수신 동의</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>제목</label>
+                        <input type="text" class="form-control" id="searchTitle" name="searchTitle">
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>내용</label>
+                        <input type="text" class="form-control" id="searchContent" name="searchContent">
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>버전</label>
+                        <input type="number" class="form-control" id="searchVersion" name="searchVersion">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchRequiredYn">필수여부</label>
+                        <select class="form-control" id="searchRequiredYn" name="searchRequiredYn">
+                          <option value="">전체</option>
+                          <option value="Y">Y</option>
+                          <option value="N">N</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchLang">언어</label>
+                        <select class="form-control" id="searchLang" name="searchLang">
+                          <option value="">전체</option>
+                          <option value="ko">한국어</option>
+                          <option value="de">독일어</option>
+                          <option value="ru">러시아어</option>
+                          <option value="vi">베트남어</option>
+                          <option value="es">스페인어</option>
+                          <option value="ar">아랍어</option>
+                          <option value="en">영어</option>
+                          <option value="it">이탈리아어</option>
+                          <option value="id">인도네시아어</option>
+                          <option value="ja">일본어</option>
+                          <option value="zh-cn">중국어(간체)</option>
+                          <option value="zh-TW">중국어(번체)</option>
+                          <option value="th">태국어</option>
+                          <option value="fr">프랑스어</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="searchDelYn">삭제여부</label>
+                        <select class="form-control" id="searchDelYn" name="searchDelYn">
+                          <option value="">전체</option>
+                          <option value="Y">Y</option>
+                          <option value="N">N</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label>등록일</label>
+                        <div class="input-group date" id="searchRegDtInput" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#searchRegDtInput" data-toggle="datetimepicker" id="searchRegDt" name="searchRegDt"/>
+                          <div class="input-group-append" data-target="#searchRegDtInput" data-toggle="datetimepicker">
+                              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 버튼 row -->
+                  <div class="row">
+                    <div class="col text-right">
+                      <button type="button" class="btn btn-secondary mr-2" data-action="form-reset">초기화</button>
+                      <button type="button" class="btn btn-primary" id="btnSearch">조회</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+            <div class="card">
+              <div class="card-header d-flex align-items-center">
+                <h3 class="card-title mb-0">검색 결과</h3>
+                <button id="btnRegister" class="btn btn-primary ml-auto mr-2">등록</button>
+                <button id="btnDelete" class="btn btn-danger">삭제</button>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="mainTable" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th class="text-center">
+                      <input type="checkbox" class="" id="chkAll">
+                    </th>
+                    <th>종류</th>
+                    <th>제목</th>
+                    <th>내용</th>
+                    <th>언어</th>
+                    <th>버전</th>
+                    <th>필수여부</th>
+                    <th>삭제여부</th>
+                    <th>등록일</th>
+                    <th>수정일</th>
+                    <th>수정</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    
+                  </tr>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+
+
+
+
+  <!-- modal-account -->
+  <div class="modal fade" id="termsModal" tabindex="-1" data-focus="false">
+    <div class="modal-dialog modal-lg">
+      <!-- modal-content -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="termsModalTitle" class="modal-title"></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="card-body">
+              <div class="form-group">
+                <label>종류</label>
+                <select id="type" class="form-control">
+                  <option value="SERVICE">서비스 이용약관</option>
+                  <option value="PRIVACY">개인정보 처리방침</option>
+                  <option value="PROFILE">프로필정보 추가 수집 동의</option>
+                  <option value="MARKETING">마케팅 수신 동의</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>언어</label>
+                <select id="lang" class="form-control">
+                  <option value="ko">한국어</option>
+                  <option value="de">독일어</option>
+                  <option value="ru">러시아어</option>
+                  <option value="vi">베트남어</option>
+                  <option value="es">스페인어</option>
+                  <option value="ar">아랍어</option>
+                  <option value="en">영어</option>
+                  <option value="it">이탈리아어</option>
+                  <option value="id">인도네시아어</option>
+                  <option value="ja">일본어</option>
+                  <option value="zh-cn">중국어(간체)</option>
+                  <option value="zh-TW">중국어(번체)</option>
+                  <option value="th">태국어</option>
+                  <option value="fr">프랑스어</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="userId">제목</label>
+                <input type="text" id="title" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="userName">내용</label>
+                <textarea id="content" class="form-control" rows="3"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>필수여부</label>
+                <select id="requiredYn" class="form-control">
+                  <option value="Y">Y</option>
+                  <option value="N">N</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="delYnDiv">
+                <label>삭제여부</label>
+                <select id="delYn" class="form-control">
+                  <option value="Y">Y</option>
+                  <option value="N">N</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>버전</label>
+                <input type="number" id="version" class="form-control" readonly>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btnActionModal" class="btn btn-primary ml-auto mr-2"></button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal-account -->
+
+</th:block>
+
+<th:block layout:fragment="extraJs">
+  <script th:src="@{/admin/static/ckeditor/ckeditor.js}"></script>
+
+  <script>
+
+    var table;
+    $(function () { 
+
+      //Date picker
+      $('#searchRegDtInput').datetimepicker({
+        format: 'YYYY-MM-DD'
+      });
+
+      //Datetable
+      table = $('#mainTable').DataTable({
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        ordering: false,
+        searching: false,
+        autoWidth: false,
+        ajax: {
+          url: '/admin/terms/termsList/data',
+          type: 'GET',
+          data: function (d) {
+
+            //Pageable 객체에 맞게 변환
+            d.page = Math.floor(d.start / d.length);
+            d.size = d.length;
+
+            //검색 파라미터 직렬화
+            var formArray = $('#searchForm').serializeArray();
+            formArray.forEach(function(item) {
+              d[item.name] = item.value;
+            });
+          },
+          error: function(xhr, textStatus, errorThrown) {
+            const response = xhr.responseJSON;
+            const errorMsg = response?.message;
+            showCustomAlert(errorMsg);
+
+            //DataTables가 자동 생성하는 로딩 인디케이터(Processing...) 숨김 처리
+            //$('#mainTable_processing').hide();
+            
+          },
+        },
+        columns: [
+          { 
+            data: 'termsId',
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+              return '<input type="checkbox" class="row-checkbox" value="' + row.termsId + '">';
+            }
+          },
+          { data: 'type' },
+          { data: 'title' },
+          { data: 'plainContent' },
+          { data: 'lang' },
+          { data: 'version' },
+          { data: 'requiredYn'},
+          { data: 'delYn'},
+          { data: 'regDate' },
+          { data: 'updDate' },
+          {
+            data: null,
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+              return '<button type="button" class="btn btn-sm btn-warning btn-edit">수정</button>';
+            }
+          },
+          { 
+            data: 'type',
+            visible: false
+          }
+        ],
+        drawCallback: function(settings) {
+          $('#chkAll').prop('checked', false);
+        }
+      });
+
+      //조회 버튼
+      $('#btnSearch').on('click', function(e) {
+        table.ajax.reload();
+      });
+
+      //삭제 버튼
+      $('#btnDelete').on('click', function() {
+        const termsIdList = $('.row-checkbox:checked').map(function () {
+          return Number($(this).val());
+        }).get();
+
+        if (termsIdList.length === 0) {
+          showCustomAlert('삭제할 약관을 선택하세요.');
+          return;
+        }
+
+        if(confirm('삭제하시겠습니까?')) {
+          $.ajax({
+            url: '/admin/terms/termsList',
+            method: 'DELETE',
+            contentType: 'application/json',
+            data: JSON.stringify(termsIdList),
+            success: function(response) {
+              table.ajax.reload();
+            },
+            error: function (xhr) {
+              const resJson = xhr.responseJSON;
+              console.error(resJson.resultCd, ": ", resJson.message);
+              showCustomAlert('삭제 실패');
+            }
+          });
+        } 
+      });
+
+      //등록 버튼
+      $('#btnRegister').on('click', function() {
+        $('#termsModal form')[0].reset();
+        CKEDITOR.instances.content.setData('');
+        $('#btnActionModal').text('등록');
+        $('#delYnDiv').hide();
+
+        $('#termsModalTitle').text('약관 등록');
+        $('#btnActionModal')
+        .text('등록')
+        .off('click')
+        .on('click', function () {
+          registerTerms();
+        });
+
+        $('#termsModal').modal('show');
+      })
+
+
+      //수정 버튼
+      $('#mainTable').on('click', '.btn-edit', function () {
+        $('#delYnDiv').show();
+
+        const tr = $(this).closest('tr');
+        const rowData = table.row(tr.hasClass('child') ? tr.prev('tr') : tr).data(); //반응형으로 tr이 늘어나는 경우 대비
+
+        $('#type').val(rowData.type);
+        $('#lang').val(rowData.lang);
+        $('#title').val(rowData.title);
+        $('#requiredYn').val(rowData.requiredYn);
+        $('#delYn').val(rowData.delYn);
+        $('#version').val(rowData.version);
+        CKEDITOR.instances.content.setData(rowData.content);
+        
+        $('#termsModalTitle').text('약관 수정');
+        $('#btnActionModal')
+        .text('수정')
+        .off('click')
+        .on('click', function () {
+          updateTerms(rowData.termsId);
+        });
+
+        $('#termsModal').modal('show');
+      });
+      
+
+      CKEDITOR.replace('content', {
+        versionCheck: false,
+        height: 200,
+        extraPlugins: 'table,tabletools,tableselection',
+        removePlugins: 'elementspath',
+        toolbar: [
+          { name: 'clipboard', items: ['Undo', 'Redo'] },
+          { name: 'styles', items: ['Format', 'FontSize'] },
+          { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+          { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
+          { name: 'insert', items: ['Table', 'Image'] },
+          { name: 'tools', items: ['Maximize'] },
+          { name: 'editing', items: ['Scayt'] }
+        ]
+      });
+
+    });
+
+    //약관 등록
+    function registerTerms() {
+      const type = $('#type').val();
+      const lang = $('#lang').val();
+      const title = $('#title').val().trim();
+      const content = CKEDITOR.instances.content.getData().trim();
+      const requiredYn = $('#requiredYn').val();
+
+      if (!title || !content) {
+        showCustomAlert('제목 또는 내용을 입력해주세요.');
+        return;
+      }
+
+      const data = {
+        type: type,
+        lang: lang,
+        title: title,
+        content: content,
+        requiredYn: requiredYn, 
+      };
+
+      $.ajax({
+        url: '/admin/terms',
+        method: 'POST',
+        data: data,
+        success: function() {
+          table.ajax.reload();
+          $('#termsModal').modal('hide');
+        },
+        error: function(xhr) {
+          const resJson = xhr.responseJSON;
+          console.error(resJson.message);
+          showCustomAlert('등록 실패.');
+        }
+      });
+    }
+
+    //약관 수정
+    function updateTerms(termsId) {
+      const type = $('#type').val();
+      const lang = $('#lang').val();
+      const title = $('#title').val().trim();
+      const content = CKEDITOR.instances.content.getData().trim();
+      const requiredYn = $('#requiredYn').val();
+      const delYn = $('#delYn').val();
+
+      if (!title || !content) {
+        showCustomAlert('제목 또는 내용을 입력해주세요.');
+        return;
+      }
+
+      const data = {
+        termsId: Number(termsId),
+        type: type,
+        lang: lang,
+        title: title,
+        content: content,
+        requiredYn: requiredYn,
+        delYn: delYn,
+
+      };
+
+      $.ajax({
+        url: '/admin/terms',
+        method: 'PUT',
+        data: data,
+        success: function() {
+          table.ajax.reload();
+          $('#termsModal').modal('hide');
+        },
+        error: function(xhr) {
+          const resJson = xhr.responseJSON;
+          console.error(resJson.message);
+          showCustomAlert('수정 실패.');
+        }
+      });
+    };
+
+    
+
+    
+
+  </script>
+</th:block>
+</html>

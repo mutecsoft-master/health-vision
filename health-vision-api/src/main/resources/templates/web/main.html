@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <link rel="stylesheet" th:href="@{/static/filepond/filepond.css}" />
+  <link rel="stylesheet" th:href="@{/static/datatables/datatables.min.css}" />
+</head>
+
+<body>
+  <th:block layout:fragment="content">
+    <div class="container">
+      <h1 th:text="#{web.main}"></h1>
+
+      <!-- BG File Upload -->
+      <div class="mb-3">
+        <input type="file" id="file" name="file" class="filepond" multiple required />
+      </div>
+
+      <div class="d-flex justify-content-end">
+        <button type="button" id="uploadBtn" class="btn btn-primary">
+          <span class="spinner-border spinner-border-sm me-2 d-none" id="uploadSpinner" role="status" aria-hidden="true"></span>
+          <span id="uploadText" th:text="#{web.main.upload}"></span>
+        </button>
+      </div>
+      <!-- /BG File Upload -->
+
+      <!-- BG File List -->
+      <div class="container mt-5">
+        <h2 class="mb-4" th:text="#{web.main.fileList}"></h2>
+
+        <div class="container mt-4">
+          <form id="searchForm" class="border p-3 rounded bg-light">
+            <div class="row g-3 mb-2">
+              <div class="col-md-6">
+                <label for="searchName" class="form-label" th:text="#{web.main.fileName}"></label>
+                <input type="text" class="form-control" id="searchFileName" name="searchFileName">
+              </div>
+              <div class="col-md-6">
+                <label for="searchEmail" class="form-label" th:text="#{web.main.size}"></label>
+                <input type="text" class="form-control" id="searchSize" name="searchSize">
+              </div>
+              <div class="col-md-4">
+                <label for="searchDate" class="form-label" th:text="#{web.main.recordStartDate}"></label>
+                <input type="date" class="form-control" id="searchRecordStartDate" name="searchRecordStartDate">
+              </div>
+              <div class="col-md-4">
+                <label for="searchDate" class="form-label" th:text="#{web.main.recordEndDate}"></label>
+                <input type="date" class="form-control" id="searchRecordEndDate" name="searchRecordEndDate">
+              </div>
+              <div class="col-md-4">
+                <label for="searchDate" class="form-label" th:text="#{web.main.uploadDate}"></label>
+                <input type="date" class="form-control" id="searchRegDt" name="searchRegDt">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col d-flex justify-content-end">
+                <button type="button" id="resetBtn" class="btn btn-secondary" th:text="#{web.main.reset}"></button>
+                <button type="button" id="searchBtn" class="btn btn-primary" th:text="#{web.main.search}"></button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <table id="fileTable" class="table table-bordered table-hover table-striped border-top align-middle">
+          <thead class="table-light">
+            <tr>
+              <th th:text="#{web.main.fileName}"></th>
+              <th th:text="#{web.main.size}"></th>
+              <th th:text="#{web.main.recordStartDate}"></th>
+              <th th:text="#{web.main.recordEndDate}"></th>
+              <th th:text="#{web.main.uploadDate}"></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <!-- /BG File List -->
+    </div>
+
+    <!-- Script -->
+    <script th:src="@{/static/filepond/filepond.js}"></script>
+    <script th:src="@{/static/filepond/filepond-plugin-file-validate-type.min.js}"></script>
+    <th:block layout:fragment="extraJs">
+      <script th:inline="javascript">
+        // DOM이 생성되고 실행.
+        $(function() {
+          const spinner = document.getElementById("uploadSpinner");
+          const text = document.getElementById("uploadText");
+          const uploadBtn = document.getElementById("uploadBtn");
+          const searchBtn = document.getElementById("searchBtn");
+          const resetBtn = document.getElementById("resetBtn");
+          const inputElement = document.querySelector('input[name="file"]');
+
+          const pond = initFilePond(inputElement);
+          initBgFileTable();
+          fileUpload(uploadBtn, pond, spinner, text);
+
+          // 검색 버튼
+          searchBtn.addEventListener('click', function () {
+            $('#fileTable').DataTable().ajax.reload();
+          });
+
+          // 검색 초기화
+          resetBtn.addEventListener('click', function() {
+            $('#searchForm')[0].reset();
+          });
+        });
+
+        // FilePond 초기화
+        function initFilePond(input) {
+          FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+          return FilePond.create(input, {
+            credits: false,
+            allowMultiple: false,
+            allowBrowse: true,
+            maxFiles: 5,
+            acceptedFileTypes: ['text/csv', 'text/tab-separated-values'],
+            fileValidateTypeDetectType: (source, type) =>
+              source.name.endsWith(".tsv")
+                ? Promise.resolve("text/tab-separated-values")
+                : Promise.resolve(type),
+            labelFileTypeNotAllowed: [[#{web.main.unsupportedFileFormat}]],
+            fileValidateTypeLabelExpectedTypes: [[#{web.main.supportedFileTypes}]]
+          });
+        };
+
+        // 파일 업로드
+        function fileUpload(uploadBtn, pond, spinner, text) {
+          uploadBtn.addEventListener("click", async () => {
+            const pondFiles = pond.getFiles();
+            if (pondFiles.length === 0) return alert([[#{web.main.pleaseSelectAFile}]]);
+            
+            uploadBtn.disabled = true;
+            setLoading(spinner, text, true);
+
+            const formData = new FormData();
+            pond.getFiles().forEach(file => {
+              formData.append("files", file.file);
+            });
+
+            $.ajax({
+              url: '/web/bg/upload',
+              method: 'POST',
+              data: formData,
+              processData: false,
+              contentType: false,
+              success: function (result, xhr) {
+                alert([[#{web.main.uploadComplete}]]);
+                pond.removeFiles();
+                $('#fileTable').DataTable().ajax.reload();
+              },
+              error: function (xhr) {
+                const resJson = xhr.responseJSON;
+                console.error(resJson.resultCd, ": ", resJson.message);
+                alert([[#{web.main.uploadFailed}]]);
+              },
+              complete: function () {
+                setLoading(spinner, text, false);
+                uploadBtn.disabled = false;
+              }
+            });
+          });
+        };
+
+        // 버튼 UI 업데이트 함수
+        function setLoading(spinner, text, loading) {
+          if (loading) {
+            spinner.classList.remove("d-none");
+            text.textContent = [[#{web.main.uploading}]];
+            uploadBtn.disabled = true;
+          } else {
+            spinner.classList.add("d-none");
+            text.textContent = [[#{web.main.upload}]];
+            uploadBtn.disabled = false;
+          }
+        };
+
+        // DataTable 초기화
+        function initBgFileTable () {
+          $('#fileTable').DataTable({
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ordering: true,
+            order:[],
+            searching: false,
+            scrollY: '500px',
+            scrollCollapse: true,
+            ajax: {
+              url: '/web/bg/list',
+              type: 'GET',
+              data: dataTableParam,
+              error: ajaxErrorHandler
+            },
+            columns: [
+              { data: 'originFileNm' },
+              { data: 'fileSize'},
+              { data: 'recordStartDate'},
+              { data: 'recordEndDate'},
+              { data: 'regDt'}
+            ],
+            language: {
+              zeroRecords: [[#{web.main.uploading}]],
+            },
+          });
+        };
+
+        //Data Table 조회 param
+        function dataTableParam(d) {
+          const hasOrder = d.order && d.order.length > 0;
+          const orderColumnIndex = hasOrder ? d.order[0].column : null;
+
+          d.page = Math.floor(d.start / d.length);
+          d.size = d.length;
+          d.orderColumn = hasOrder ? d.columns[orderColumnIndex].data : null;
+          d.orderDirection = hasOrder ? d.order[0].dir : null;
+
+          var formArray = $('#searchForm').serializeArray();
+          formArray.forEach(function(item) {
+            d[item.name] = item.value;
+          });
+        };
+
+        // BG File List Ajax 요청 에러 발생 시, 에러 핸들러
+        function ajaxErrorHandler (xhr) {
+          const resJson = xhr.responseJSON;
+          console.error(resJson.resultCd, ": ", resJson.message);
+          alert([[#{web.main.failedToLoadData}]]);
+        };
+      </script>
+    </th:block>
+    <!-- /Script -->
+  </th:block>
+</body>
+
+</html>

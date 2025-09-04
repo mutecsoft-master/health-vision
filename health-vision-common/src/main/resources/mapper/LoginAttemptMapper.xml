@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.LoginAttemptMapper">
+
+    <sql id="loginAttemptColumn">
+        LOGIN_ATTEMPT_ID
+        , EMAIL
+        , IP
+        , FAIL_CNT
+        , LAST_ATTEMPT_DT
+    </sql>
+    
+    <select id="selectLastLoginAttempt" parameterType="com.mutecsoft.healthvision.common.model.LoginAttempt">
+        SELECT
+            <include refid="loginAttemptColumn"/>
+        FROM TB_LOGIN_ATTEMPT
+        WHERE EMAIL = #{email}
+        AND IP = #{ip}
+        ORDER BY LAST_ATTEMPT_DT DESC
+        LIMIT 1
+    </select>
+    
+    <insert id="insertLoginAttempt" parameterType="com.mutecsoft.healthvision.common.model.LoginAttempt">
+        INSERT INTO TB_LOGIN_ATTEMPT (
+            EMAIL
+            , IP
+            , FAIL_CNT
+            , LAST_ATTEMPT_DT
+        ) VALUES (
+            #{email},
+            #{ip},
+            '1',
+            NOW()
+        )
+    </insert>
+    
+    <update id="initLoginAttempt" parameterType="com.mutecsoft.healthvision.common.model.LoginAttempt">
+        UPDATE TB_LOGIN_ATTEMPT
+        SET 
+            FAIL_CNT = '0'
+            , LAST_ATTEMPT_DT = NOW()
+        WHERE LOGIN_ATTEMPT_ID = #{loginAttemptId}
+    </update>
+    
+    <update id="updateFailCnt" parameterType="com.mutecsoft.healthvision.common.model.LoginAttempt">
+        UPDATE TB_LOGIN_ATTEMPT
+        SET 
+            FAIL_CNT = FAIL_CNT + 1
+            , LAST_ATTEMPT_DT = NOW()
+        WHERE LOGIN_ATTEMPT_ID = #{loginAttemptId}
+    </update>
+    
+</mapper>

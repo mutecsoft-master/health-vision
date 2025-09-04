@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    default: local
+  output:
+    ansi:
+      enabled: never
+      
+      
+server:
+  servlet:
+    context-path: /
+    
+    
+#이미지 다운로드 api url    
+img-api-url: /common/img
+report-file-url: /report/file

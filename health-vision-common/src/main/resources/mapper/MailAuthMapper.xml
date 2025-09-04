@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.MailAuthMapper">
+
+    <sql id="mailAuthColumn">
+        MAIL_AUTH_ID
+        , EMAIL
+        , CODE
+        , CODE_EXPIRED_DT
+        , VERIFIED_YN
+        , SIGNUP_EXPIRED_DT
+        , REG_DT
+        , UPD_DT
+    </sql>
+    
+    <select id="selectMailAuthByEmail" parameterType="String" resultType="com.mutecsoft.healthvision.common.model.MailAuth">
+        SELECT 
+            <include refid="mailAuthColumn"/>
+        FROM TB_MAIL_AUTH
+        WHERE EMAIL = #{email}
+    </select>
+    
+    <insert id="insertMailAuth" parameterType="com.mutecsoft.healthvision.common.model.MailAuth">
+        INSERT INTO TB_MAIL_AUTH (
+            EMAIL
+            , CODE
+            , CODE_EXPIRED_DT
+            , VERIFIED_YN
+            , SIGNUP_EXPIRED_DT
+            , REG_DT
+            , UPD_DT
+        ) VALUES (
+            #{email}
+            , #{code}
+            , #{codeExpiredDt}
+            , 'N'
+            , NULL
+            , NOW()
+            , NOW()
+        ) ON DUPLICATE KEY UPDATE
+        CODE = #{code},
+        CODE_EXPIRED_DT = #{codeExpiredDt},
+        VERIFIED_YN = 'N',
+        SIGNUP_EXPIRED_DT = NULL,
+        REG_DT = NOW(), 
+        UPD_DT = NOW()
+    </insert>
+    
+    <update id="verifyMailAuth" parameterType="com.mutecsoft.healthvision.common.model.MailAuth">
+        UPDATE TB_MAIL_AUTH
+        SET VERIFIED_YN = #{verifiedYn}
+            , SIGNUP_EXPIRED_DT = #{signupExpiredDt}
+            , UPD_DT = NOW()
+        WHERE EMAIL = #{email}
+    </update>
+
+</mapper>

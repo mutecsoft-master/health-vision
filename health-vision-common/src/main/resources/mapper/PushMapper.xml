@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutecsoft.healthvision.common.mapper.PushMapper">
+
+    <insert id="insertPush" parameterType="com.mutecsoft.healthvision.common.model.Push" useGeneratedKeys="true"
+            keyProperty="pushId" keyColumn="push_id">
+        INSERT INTO TB_PUSH (
+            TITLE
+            , BODY
+            , TYPE
+            , SUCCESS_CNT
+            , FAIL_CNT
+            , TARGET_CNT
+            , REG_DT
+        )
+        VALUES (
+            #{title}
+            , #{body}
+            , #{type}
+            , #{successCnt}
+            , #{failCnt}
+            , #{targetCnt}
+            , NOW()
+        )
+    </insert>
+    
+    
+    <insert id="insertPushTargetList" parameterType="com.mutecsoft.healthvision.common.model.PushTarget">
+        INSERT INTO TB_PUSH_TARGET(
+            READ_YN
+            , READ_DT
+            , PUSH_ID
+            , USER_ID
+        )VALUES
+        <foreach collection="pushTargetList" item="item" separator=",">
+        (
+            'N'
+            , NULL
+            , #{item.pushId}
+            , #{item.userId}
+        )
+        </foreach>
+    </insert>
+    
+    <insert id="insertPushFailList" parameterType="com.mutecsoft.healthvision.common.model.PushFail">
+        INSERT INTO TB_PUSH_FAIL(
+            ERROR_CD
+            , ERROR_DESC
+            , TOKEN
+            , PUSH_ID
+        )VALUES
+        <foreach collection="pushFailList" item="item" separator=",">
+        (
+            #{item.errorCd}
+            , #{item.errorDesc}
+            , #{item.token}
+            , #{item.pushId}
+        )
+        </foreach>
+    </insert>
+    
+</mapper>
