@@ -3,7 +3,7 @@
 
     <!-- 기본 로그 패턴 -->
     <property name="PATTERN" value="%d [%thread] %-5level %logger{36} - %msg%n"/>
-    <property name="LOG_FILE" value=".log/helloglyco"/>
+    <property name="LOG_FILE" value=".log/healthvision"/>
     <property name="LOG_LEVEL" value="INFO"/>
     <property name="LOG_MAX_SIZE" value="100MB"/>
     <property name="LOG_MAX_HISTORY" value="30"/>

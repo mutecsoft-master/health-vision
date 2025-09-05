@@ -12,14 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.LocaleResolver;
-
-import com.mutecsoft.healthvision.api.service.CustomOAuth2UserService;
-import com.mutecsoft.healthvision.common.config.LocaleFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,12 +25,6 @@ public class WebSecurityJwtConfig {
 	//api
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
-    private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
-    
-    //web
-    private final CustomAuthFailureHandler customAuthFailureHandler;
     
     @Bean
     JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -61,11 +49,8 @@ public class WebSecurityJwtConfig {
                         .antMatchers("/api/auth/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/user").permitAll()
                         .antMatchers("/api/user/email/**").permitAll()
-                        .antMatchers("/api/user/findPw").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/terms/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/notice/**").permitAll()
-                        .antMatchers("/api/googleRtdn/**").permitAll()
-                        .antMatchers("/api/appleRtdn/**").permitAll()
                         .anyRequest().authenticated())
                 ;
 
@@ -75,39 +60,6 @@ public class WebSecurityJwtConfig {
         return http.build();
     }
     
-    
-    @Bean
-    @Order(2)
-    SecurityFilterChain webSecurityFilterChain(HttpSecurity http, LocaleResolver localeResolver) throws Exception {
-        http
-            .antMatcher("/web/**") // web 요청만 처리
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(requests -> requests
-                .antMatchers("/static/**").permitAll()
-                .antMatchers("/web/auth/login/**").permitAll()
-                .antMatchers("/web/oauth/**").permitAll() //Apple 로그인
-        		.antMatchers("/web/notice/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/web/auth/login") // 로그인 페이지
-                .loginProcessingUrl("/web/auth/login/proc") // 로그인 처리
-                .defaultSuccessUrl("/web/main", true) // 로그인 성공 시 이동
-                .failureHandler(customAuthFailureHandler)
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/web/auth/logout")
-                .logoutSuccessUrl("/web/auth/login")
-                .invalidateHttpSession(true)
-            );
-        
-        http.addFilterBefore(new LocaleFilter(localeResolver), UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
-    
-    
     @Bean
     @Order(3)
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -115,19 +67,11 @@ public class WebSecurityJwtConfig {
             .authorizeRequests(authorize -> authorize
         		.antMatchers("/").permitAll()
         		.antMatchers("/static/**", "/templates/**").permitAll()
-        		.antMatchers("/oauth2/**").permitAll() //oauth2 : Google 로그인
         		.antMatchers("/error").permitAll() //error : whitelabel error 페이지 표시
                 .antMatchers("/swagger-ui/**").permitAll()
         		.antMatchers("/swagger-resources/**").permitAll()
         		.antMatchers("/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
-            )
-            .oauth2Login(login -> login
-                .loginPage("/web/auth/login")
-                .successHandler(customOAuth2SuccessHandler)
-                .failureHandler(customOAuth2FailureHandler)
-                .userInfoEndpoint()
-                .userService(customOAuth2UserService)
             );
         return http.build();
     }

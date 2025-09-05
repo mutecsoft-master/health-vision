@@ -57,11 +57,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     User user = userService.selectUserByUserId(Long.parseLong(userId));
                     
                     List<GrantedAuthority> authorities = new ArrayList<>();
-                    if(user.getRoleNmList() != null) {
-                    	for(String roleNm : user.getRoleNmList()) {
-                    		authorities.add(new SimpleGrantedAuthority(Const.ROLE_PREFIX + roleNm));
-                    	}
-                    }
                     
                     UserInfo userInfo = modelMapper.map(user, UserInfo.class);
                     
@@ -80,7 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         	response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-            ResponseDto responseDto = new ResponseDto(false, null, ResultCdEnum.L001.getValue());
+            ResponseDto responseDto = new ResponseDto(false, "사용자 인증에 실패했습니다.");
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonResponse = objectMapper.writeValueAsString(responseDto);
 

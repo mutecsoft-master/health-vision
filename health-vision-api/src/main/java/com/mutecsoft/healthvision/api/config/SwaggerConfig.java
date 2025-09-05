@@ -28,7 +28,7 @@ public class SwaggerConfig {
  
     private Info apiInfo() {
         return new Info()
-                .title("HelloGlyco Springdoc")
+                .title("health-vision Springdoc")
                 .description("Springdoc을 사용한 Swagger UI")
                 .version("1.0.0");
     }

@@ -101,9 +101,7 @@ public class JwtTokenUtil {
             claims.put("type", SingleTokenTypeEnum.ACCESS.getValue());
         } else if(tokenType.equals(SingleTokenTypeEnum.REFRESH.getValue())) {
             claims.put("type", SingleTokenTypeEnum.REFRESH.getValue());
-        } else if(tokenType.equals(SingleTokenTypeEnum.PASSWORD.getValue())) {
-        	claims.put("type", SingleTokenTypeEnum.PASSWORD.getValue());
-        }
+        } 
 
         //필요한 클레임은 여기에 추가
         return doGenerateToken(tokenType, claims, userId);
@@ -127,8 +125,6 @@ public class JwtTokenUtil {
             return (long) Integer.parseInt(accessExpireTime) * 60 * 60 * 1000; //시간
         } else if(tokenType.equals(SingleTokenTypeEnum.REFRESH.getValue())){
             return (long) Integer.parseInt(refreshExpireDay) * 24 * 60 * 60 * 1000; //일
-        } else if(tokenType.equals(SingleTokenTypeEnum.PASSWORD.getValue())){
-        	return (long) Integer.parseInt(passwordExpireMinute) * 60 * 1000; //분
         }
 		return 0;
 

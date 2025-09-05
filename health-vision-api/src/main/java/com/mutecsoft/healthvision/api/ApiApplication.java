@@ -1,9 +1,5 @@
 package com.mutecsoft.healthvision.api;
 
-import java.util.TimeZone;
-
-import javax.annotation.PostConstruct;
-
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,9 +14,4 @@ public class ApiApplication {
 		SpringApplication.run(ApiApplication.class, args);
 	}
 	
-	@PostConstruct
-    void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-    }
-
 }

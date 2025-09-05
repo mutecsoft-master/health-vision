@@ -3,8 +3,6 @@ package com.mutecsoft.healthvision.common.dto;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;
@@ -23,9 +21,6 @@ public class ResponseDto {
     private String message;
     private Object data;
     
-    @JsonInclude(Include.NON_NULL)
-    private String resultCd;
-
     public ResponseDto() {
     }
 
@@ -43,27 +38,11 @@ public class ResponseDto {
         }
     }
     
-    public ResponseDto(boolean isSuccess, String message, String resultCd) {
-        this.isSuccess = isSuccess;
-        if(StringUtils.hasText(message)) {
-        	this.message = message;
-        }else {
-        	setDefaultMessage();
-        }
-        this.resultCd = resultCd;
-    }
-
     public ResponseDto(boolean isSuccess, Object data) {
         this(isSuccess);
         this.data = data;
     }
     
-    public ResponseDto(boolean isSuccess, Object data, String resultCd) {
-        this(isSuccess);
-        this.data = data;
-        this.resultCd = resultCd;
-    }
-
     public ResponseDto(boolean isSuccess, String message, @Nullable Object data) {
         this.isSuccess = isSuccess;
         if(StringUtils.hasText(message)) {
@@ -72,17 +51,6 @@ public class ResponseDto {
         	setDefaultMessage();
         }
         this.data = data;
-    }
-    
-    public ResponseDto(boolean isSuccess, String message, @Nullable Object data, String resultCd) {
-        this.isSuccess = isSuccess;
-        if(StringUtils.hasText(message)) {
-        	this.message = message;
-        }else {
-        	setDefaultMessage();
-        }
-        this.data = data;
-        this.resultCd = resultCd;
     }
     
     private void setDefaultMessage() {

@@ -9,9 +9,9 @@ spring:
     view:
       suffix: .html
   datasource:
-    url: jdbc:log4jdbc:mariadb://mutec.iptime.org:3306/helloglyco?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf8&autoReconnect=true&sessionVariables=@@time_zone='+00:00'
-    username: helloglyco
-    password: glyco123!@#
+    url: jdbc:log4jdbc:mariadb://mutec.iptime.org:3306/healthvision?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf8&autoReconnect=true'
+    username: healthvision
+    password: healthvision123!@#
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     hikari:
       leak-detection-threshold: 60000
@@ -24,45 +24,9 @@ spring:
     resources:
       static-locations: classpath:/static/
       add-mappings: true
-  
-  # sns 로그인 계정 : git@mutecsoft.com (google, apple)
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 812290657778-kfnjt5cg9nit58gfro68f42tf5h463k9.apps.googleusercontent.com
-            client-secret: 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
-            scope:
-            - profile
-            - email # default는 openid가 들어가는데 넣게되면 카카오,네이버를 따로빼야함
-        provider:
-          google:
-            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
   thymeleaf:
     cache: false
     prefix: classpath:/templates/
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: git@mutecsoft.com
-    password: 'okcl nelu lclf nybc'
-    properties:
-      mail:
-        smtp:
-          timeout: 10000 #10s
-          auth: true
-          starttls:
-            enable: true
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    shutdown:
-      enabled: true
 
 mybatis:
   type-aliases-package: com.mutecsoft.healthvision.common.model, com.mutecsoft.healthvision.common.dto
@@ -90,31 +54,7 @@ jwt:
   refresh-expire-day: 20  #인증만료일자 (일)
   password-expire-minute: 10 #인증만료일자 (분)
   base64:
-    secret: mutecBase #인증암화키
-
-apple:
-  login:
-    team-id: 2FEYC5CTAW
-    client-id: helloglyco.mutecsoft.com
-    bundle-id: com.mutecsoft.helloglyco
-    redirect-url: https://mutec-helloglyco.duckdns.org/web/oauth/apple/return
-    key-id: VN9HRN9HRP
-    key-path: key/apple/AuthKey_VN9HRN9HRP.p8
-    auth-url: https://appleid.apple.com
-    jwk-set-uri: https://appleid.apple.com/auth/keys
-  iap:
-    is-sandbox: true # 개발환경 : true / 운영환경 : false 
-    key-id: 974QTVLD92
-    key-path: key/apple/SubscriptionKey_974QTVLD92.p8
-    issuer-id: 69a6de70-e806-47e3-e053-5b8c7c11a4d1
-    bundle-id: com.mutecsoft.helloglyco
-    verify-url:
-      production: https://api.storekit.itunes.apple.com/inApps/v1/transactions
-      sandbox: https://api.storekit-sandbox.itunes.apple.com/inApps/v1/transactions
-
-google:
-  play:
-    credentials-path: key/google-iap/helloglyco-7fc905f2fe43.json
+    secret: health-vision-2025 #인증암화키
 
 file:
-  base-path: /home/mutecsoft/helloglyco/upload 
+  base-path: /home/mutecsoft/healthvision/upload 

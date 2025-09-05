@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mutecsoft.healthvision.api.service.AuthService;
-import com.mutecsoft.healthvision.common.constant.ResultCdEnum;
 import com.mutecsoft.healthvision.common.dto.ResponseDto;
 import com.mutecsoft.healthvision.common.dto.UserDto.LoginRequest;
-import com.mutecsoft.healthvision.common.exception.CustomException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,7 +58,7 @@ public class AuthController {
         if(tokenMap != null) {
         	return ResponseEntity.ok(new ResponseDto(true, tokenMap));
         }else {
-        	throw new CustomException(ResultCdEnum.L003.getValue());
+        	throw new RuntimeException("유효하지 않은 토큰입니다.");
         }
     }
 

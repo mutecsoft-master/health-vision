@@ -26,11 +26,4 @@ public interface UserService {
 
 	PageImpl<UserInfo> selectUserListPage(SearchUser searchParam, Pageable pageable);
 
-    PageImpl<UserInfo> selectAnalystListPage(SearchUser searchParam, Pageable pageable);
-
-	ResponseDto registerAnalyst(RegisterAnalystRequest registerAnlystReq);
-
-	void deleteAnalystList(List<Long> userIdList);
-
-	
 }

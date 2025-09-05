@@ -17,7 +17,7 @@ public class AdminUserDto {
 	@Getter
 	@Setter
 	@ToString
-    public static class SearchUser extends DatatableDto {
+    public static class SearchUser {
 		
 		//검색 파라미터
 		private String searchEmail;

@@ -26,9 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mutecsoft.healthvision.common.constant.ResultCdEnum;
 import com.mutecsoft.healthvision.common.dto.FileDto.FileInsertDto;
-import com.mutecsoft.healthvision.common.exception.CustomException;
 import com.mutecsoft.healthvision.common.model.FileModel;
 
 import lombok.RequiredArgsConstructor;
@@ -138,7 +136,7 @@ public class FileUtil {
             return file;
         }
         
-        throw new CustomException(ResultCdEnum.E004.getValue());
+        throw new RuntimeException("파일 생성에 실패했습니다.");
     }
 
     private boolean createNewFile(File f) {
@@ -196,7 +194,7 @@ public class FileUtil {
             	IOUtils.copy(fis, os);
             }
     	} catch (IOException e) {
-        	throw new CustomException(ResultCdEnum.E107.getValue());
+        	throw new RuntimeException("파일 다운로드에 실패했습니다.");
 		}
 	}
     

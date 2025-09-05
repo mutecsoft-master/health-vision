@@ -4,8 +4,7 @@ package com.mutecsoft.healthvision.common.constant;
 public enum SingleTokenTypeEnum {
 
 	ACCESS("access", "access"),
-	REFRESH("refresh", "refresh"),
-	PASSWORD("password", "password")
+	REFRESH("refresh", "refresh")
 	;
 	
 	private final String value;

@@ -3,13 +3,9 @@ package com.mutecsoft.healthvision.common.util;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
-import org.apache.commons.text.RandomStringGenerator;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.stereotype.Component;
-
-import com.mutecsoft.healthvision.common.constant.ResultCdEnum;
-import com.mutecsoft.healthvision.common.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,20 +17,6 @@ public class CommonUtil {
 	private static final String ALLOWED_CHARS_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final String ALLOWED_CHARS_LOWER = "abcdefghijklmnopqrstuvwxyz";
 	private static final String ALLOWED_CHARS_SPECIAL = "!@#$%^&*()_+-=[]{}|;:,.?"; //꺽쇠(<, >)는 html 태그로 인식될 가능성이 있어 제외
-	
-	//인증 코드 생성(숫자)
-	public String generateNumberCode(int length) {
-		if (length <= 0) {
-	        throw new CustomException(ResultCdEnum.E001.getValue());
-	    }
-
-	    RandomStringGenerator generator = new RandomStringGenerator.Builder()
-	        .withinRange('0', '9')
-	        .get();
-
-	    return generator.generate(length);
-		
-	}
 	
 	//인증 만료 시간 생성
 	public LocalDateTime calcExpiryTime(int seconds) {

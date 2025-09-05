@@ -1,7 +1,7 @@
 package com.mutecsoft.healthvision.admin.security;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -10,12 +10,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.mutecsoft.healthvision.admin.service.UserService;
-import com.mutecsoft.healthvision.common.constant.Const;
 import com.mutecsoft.healthvision.common.dto.UserDto.UserInfo;
 import com.mutecsoft.healthvision.common.model.User;
 import com.mutecsoft.healthvision.common.util.MessageUtil;
@@ -47,16 +45,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         	throw new BadCredentialsException(messageUtil.getMessage("web.login.authenticationFailed"));
         }
         
-        if(!user.getRoleNmList().contains(Const.ROLE_ADMIN) && !user.getRoleNmList().contains(Const.ROLE_ANALYST)) {
-        	throw new BadCredentialsException(messageUtil.getMessage("web.accessDenied"));
-        }
 
         userService.updateLastLoginDt(user.getUserId());
 
         UserInfo userInfo = modelMapper.map(user, UserInfo.class);
-        List<GrantedAuthority> authorities = userInfo.getRoleNmList().stream()
-    	    .map(roleNm -> new SimpleGrantedAuthority(Const.ROLE_PREFIX + roleNm))
-    	    .collect(Collectors.toList());
+        List<GrantedAuthority> authorities = new ArrayList<>();
 
         return new UsernamePasswordAuthenticationToken(userInfo, null, authorities);
     }

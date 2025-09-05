@@ -9,7 +9,6 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mutecsoft.healthvision.common.annotation.Password;
 import com.mutecsoft.healthvision.common.model.BaseModel;
 
 import lombok.Getter;
@@ -29,7 +28,6 @@ public class UserDto {
 		@Email(message = "V001")
 		private String email;
 		@NotEmpty
-		@Password(message = "V002")
 		private String userPw;
 		@NotEmpty
 		List<Long> agreeTermsIdList;
@@ -90,7 +88,6 @@ public class UserDto {
 		private String currentPw;
 		
 		@NotEmpty
-		@Password(message = "V002")
 		private String newPw;
     }
 	

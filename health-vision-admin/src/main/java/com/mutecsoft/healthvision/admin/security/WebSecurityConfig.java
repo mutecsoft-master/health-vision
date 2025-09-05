@@ -10,10 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.LocaleResolver;
-
-import com.mutecsoft.healthvision.common.config.LocaleFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,8 +47,6 @@ public class WebSecurityConfig {
                         .logoutSuccessUrl("/admin/auth/login")
                         .invalidateHttpSession(true)
                 );
-
-        http.addFilterBefore(new LocaleFilter(localeResolver), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
