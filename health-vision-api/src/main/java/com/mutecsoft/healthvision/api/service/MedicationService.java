@@ -13,6 +13,7 @@ public interface MedicationService {
 	
 	List<MedicationInfo> selectMedicationInfoList(Long userId);
 	List<MedicationLogResponse> selectMedicationLogList(Long userId);
+	void deleteMedicationInfo(Long medInfoId);
 
 
 }

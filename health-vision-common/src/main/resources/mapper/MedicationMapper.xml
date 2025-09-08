@@ -71,4 +71,26 @@
         ORDER BY LOGS.REG_DT DESC
     </select>
     
+    <select id="selectMedicationInfo" resultType="com.mutecsoft.healthvision.common.model.MedicationInfo">
+        SELECT
+            MED_INFO_ID
+            , MED_NM
+            , DOSE_PERIOD
+            , DOSE_START_DATE
+            , DOSE_END_DATE
+            , USER_ID
+            , DEL_YN
+            , REG_DT
+        FROM TB_MEDICATION_INFO
+        WHERE MED_INFO_ID = #{medInfoId}
+          AND USER_ID = #{userId}
+    </select>
+    
+    <update id="deleteMedicationInfo">
+        UPDATE TB_MEDICATION_INFO
+        SET DEL_YN = 'Y'
+            , DEL_DT = NOW()
+        WHERE MED_INFO_ID = #{medInfoId}
+    </update>
+    
 </mapper>

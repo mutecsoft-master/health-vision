@@ -3,7 +3,9 @@ package com.mutecsoft.healthvision.api.controller.api;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mutecsoft.healthvision.api.service.MedicationService;
 import com.mutecsoft.healthvision.api.util.UserUtil;
-import com.mutecsoft.healthvision.common.dto.ResponseDto;
 import com.mutecsoft.healthvision.common.dto.MedicationLogDto.MedicationLogResponse;
+import com.mutecsoft.healthvision.common.dto.ResponseDto;
 import com.mutecsoft.healthvision.common.dto.UserDto.UserInfo;
 import com.mutecsoft.healthvision.common.model.MedicationInfo;
 import com.mutecsoft.healthvision.common.model.MedicationLog;
@@ -66,6 +68,16 @@ public class MedicationController {
 		List<MedicationLogResponse> list = medicationService.selectMedicationLogList(userInfo.getUserId());
 		
 		return ResponseEntity.ok(new ResponseDto(true, list));
+	}
+	
+	
+	@Operation(summary = "복약정보 삭제", description = "복약정보 삭제")
+	@DeleteMapping("/info/{medInfoId}")
+	public ResponseEntity<ResponseDto> deleteMedicationInfo(@PathVariable("medInfoId") String medInfoId) {
+		
+		medicationService.deleteMedicationInfo(Long.parseLong(medInfoId));
+		
+		return ResponseEntity.ok(new ResponseDto(true));
 	}
 	
 }
