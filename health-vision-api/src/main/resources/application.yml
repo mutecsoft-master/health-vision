@@ -12,5 +12,3 @@ server:
 
 #이미지 다운로드 api url    
 img-api-url: /common/img
-report-preview-url: /report/v2/preview
-report-download-url: /report/v2/download

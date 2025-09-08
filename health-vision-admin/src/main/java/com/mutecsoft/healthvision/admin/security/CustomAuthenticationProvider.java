@@ -45,7 +45,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         	throw new BadCredentialsException(messageUtil.getMessage("web.login.authenticationFailed"));
         }
         
-
         userService.updateLastLoginDt(user.getUserId());
 
         UserInfo userInfo = modelMapper.map(user, UserInfo.class);

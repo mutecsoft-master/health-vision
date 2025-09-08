@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mutecsoft.healthvision.api.service.AuthService;
 import com.mutecsoft.healthvision.common.dto.ResponseDto;
 import com.mutecsoft.healthvision.common.dto.UserDto.LoginRequest;
+import com.mutecsoft.healthvision.common.exception.CustomException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -58,7 +60,7 @@ public class AuthController {
         if(tokenMap != null) {
         	return ResponseEntity.ok(new ResponseDto(true, tokenMap));
         }else {
-        	throw new RuntimeException("유효하지 않은 토큰입니다.");
+        	throw new CustomException("유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED);
         }
     }
 

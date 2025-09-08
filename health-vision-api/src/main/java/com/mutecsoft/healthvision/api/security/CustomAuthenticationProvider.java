@@ -41,10 +41,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         boolean isNormalPwValid = passwordEncoder.matches(userPw, user.getUserPw());
-        boolean isTempPwValid = passwordEncoder.matches(userPw, user.getTempPw()) 
-                                && user.getTempPwExpireDt().isAfter(LocalDateTime.now());
         
-        if (!(isNormalPwValid || isTempPwValid)) {
+        if (!isNormalPwValid) {
         	throw new BadCredentialsException(messageUtil.getMessage("web.login.authenticationFailed"));
         }
 

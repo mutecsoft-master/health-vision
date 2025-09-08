@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestControllerAdvice(basePackages = "com.mutecsoft.helloglyco.api.controller.api")
+@RestControllerAdvice(basePackages = "com.mutecsoft.healthvision.api.controller.api")
 public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(value = {CustomException.class})

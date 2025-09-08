@@ -1,9 +1,6 @@
 package com.mutecsoft.healthvision.common.dto.admin;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,10 +18,8 @@ public class AdminUserDto {
 		
 		//검색 파라미터
 		private String searchEmail;
-		private String searchNickname;
 		private String searchDelYn;
 		private String searchRegDate;
-		private String searchRoleNm;
     }
     
 	
@@ -33,7 +28,6 @@ public class AdminUserDto {
 	@ToString
 	public static class RegisterAnalystRequest {
 		@NotEmpty
-		@Email(message = "V001")
 		private String email;
 		
 		@NotEmpty
@@ -47,7 +41,6 @@ public class AdminUserDto {
 		private Long userId;
 	    private String email;
 	    private String userPw;
-	    private String nickname;
 	    
     }
 }

@@ -1,13 +1,10 @@
 package com.mutecsoft.healthvision.api.service.impl;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mutecsoft.healthvision.api.service.FileService;
 import com.mutecsoft.healthvision.api.service.UserService;
-import com.mutecsoft.healthvision.api.util.JwtTokenUtil;
 import com.mutecsoft.healthvision.api.util.UserUtil;
 import com.mutecsoft.healthvision.common.dto.ResponseDto;
 import com.mutecsoft.healthvision.common.dto.UserDto.SignupRequest;
@@ -15,8 +12,6 @@ import com.mutecsoft.healthvision.common.dto.UserDto.UserInfo;
 import com.mutecsoft.healthvision.common.mapper.UserMapper;
 import com.mutecsoft.healthvision.common.model.User;
 import com.mutecsoft.healthvision.common.util.CommonUtil;
-import com.mutecsoft.healthvision.common.util.FileUtil;
-import com.mutecsoft.healthvision.common.util.MessageUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,17 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
-    private final FileService fileService;
-    
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenUtil jwtTokenUtil;
-    private final MessageUtil messageUtil;
-    private final CommonUtil commonUtil;
     private final UserUtil userUtil;
-    private final FileUtil fileUtil;
-
-    @Value("${jwt.password-expire-minute}")
-    private String passwordExpireMinute;
 
     @Override
     public User selectUserByEmail(String email) {
@@ -52,8 +38,6 @@ public class UserServiceImpl implements UserService {
     	
         return user;
     }
-
-    
 
     @Transactional
     @Override

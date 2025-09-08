@@ -69,7 +69,6 @@ public class UserServiceImpl implements UserService {
 		
 		User user = new User();
 		user.setUserId(updateReq.getUserId());
-		user.setNickname(updateReq.getNickname());
 		if(StringUtils.hasText(updateReq.getUserPw())) {
 			user.setUserPw(passwordEncoder.encode(updateReq.getUserPw()));
 		}

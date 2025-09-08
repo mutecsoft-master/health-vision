@@ -49,8 +49,6 @@ public class WebSecurityJwtConfig {
                         .antMatchers("/api/auth/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/user").permitAll()
                         .antMatchers("/api/user/email/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/api/terms/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/api/notice/**").permitAll()
                         .anyRequest().authenticated())
                 ;
 

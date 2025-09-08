@@ -32,8 +32,6 @@ public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
-    private final ModelMapper modelMapper;
-    private final MessageUtil messageUtil;
     
     @Transactional
     public ResponseDto login(LoginRequest loginReq) {
@@ -64,6 +62,12 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public Map<String, String> refreshToken(HttpServletRequest request) {
     	String token = jwtTokenUtil.getJwtFromRequest(request);
+    	
+    	//refresh token 을 받았을 경우만 재발급
+    	String tokenType = jwtTokenUtil.getTokenType(token);
+    	if(!tokenType.equals(SingleTokenTypeEnum.REFRESH.getValue())) {
+    		return null;
+    	}
     	
     	if(!jwtTokenUtil.isValidToken(token)) {
     		return null;
