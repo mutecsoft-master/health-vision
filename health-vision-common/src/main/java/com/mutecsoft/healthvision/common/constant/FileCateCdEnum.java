@@ -3,10 +3,9 @@ package com.mutecsoft.healthvision.common.constant;
 //파일 카테고리 코드
 public enum FileCateCdEnum {
 
-	FOOD("FOOD", "Food Diary"), //식이 다이어리 음식 사진
-	PRESET("PRESET", "Food Preset"), //즐겨먹기 음식 사진
-	PROFILE("PROFILE", "User Profile"), //사용자 프로필
-	REPORT("REPORT", "Report"); //리포트
+	MEAL("MEAL", "Meal"), //식사 사진
+	MEDICATION("MEDICATION", "Medication"), //복약 사진
+	;
 	
 	private final String value;
 	private final String desc;

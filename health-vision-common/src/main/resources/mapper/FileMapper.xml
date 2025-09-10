@@ -8,7 +8,6 @@
     -->
     <sql id="fileColumn">
         TF.FILE_ID
-        , TF.FILE_GROUP_ID
         , TF.FILE_CATE_CD
         , TF.FILE_NM
         , TF.FILE_PATH
@@ -23,8 +22,7 @@
 
     <insert id="insertFile" parameterType="com.mutecsoft.healthvision.common.model.FileModel" useGeneratedKeys="true" keyProperty="fileId" keyColumn="file_id">
         INSERT INTO TB_FILE(
-            FILE_GROUP_ID
-            , FILE_CATE_CD
+            FILE_CATE_CD
             , FILE_NM
             , FILE_PATH
             , ORIGIN_FILE_NM
@@ -34,8 +32,7 @@
             , UPD_ID
             , UPD_DT
         )VALUES (
-            #{fileGroupId}
-            , #{fileCateCd}
+            #{fileCateCd}
             , #{fileNm}
             , #{filePath}
             , #{originFileNm}

@@ -8,6 +8,7 @@
             , DOSE_PERIOD
             , DOSE_START_DATE
             , DOSE_END_DATE
+            , FILE_ID
             , USER_ID
             , DEL_YN
             , REG_DT
@@ -16,6 +17,7 @@
             , #{dosePeriod}
             , #{doseStartDate}
             , #{doseEndDate}
+            , #{fileId}
             , #{regId}
             , 'N'
             , NOW()
@@ -44,6 +46,7 @@
             , DOSE_PERIOD
             , DOSE_START_DATE
             , DOSE_END_DATE
+            , FILE_ID
             , USER_ID
             , DEL_YN
             , REG_DT
@@ -64,6 +67,7 @@
             , INFO.DOSE_PERIOD
             , INFO.DOSE_START_DATE
             , INFO.DOSE_END_DATE
+            , INFO.FILE_ID
         FROM TB_MEDICATION_LOGS LOGS
         LEFT JOIN TB_MEDICATION_INFO INFO
         ON LOGS.MED_INFO_ID = INFO.MED_INFO_ID
@@ -78,6 +82,7 @@
             , DOSE_PERIOD
             , DOSE_START_DATE
             , DOSE_END_DATE
+            , FILE_ID
             , USER_ID
             , DEL_YN
             , REG_DT

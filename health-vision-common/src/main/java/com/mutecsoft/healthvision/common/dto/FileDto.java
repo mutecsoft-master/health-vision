@@ -17,7 +17,6 @@ public class FileDto {
 	@ToString
 	@AllArgsConstructor
 	public static class FileInsertDto {
-		private int keyIndex;
 		private MultipartFile file;
 		private String cateCd;
 	}

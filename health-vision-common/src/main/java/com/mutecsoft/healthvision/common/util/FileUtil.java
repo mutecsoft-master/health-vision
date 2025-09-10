@@ -74,7 +74,6 @@ public class FileUtil {
             fileModel.setFilePath(fullPath);
             fileModel.setFileNm(file.getName());
             fileModel.setFileCateCd(fileDto.getCateCd());
-            fileModel.setKeyIndex(fileDto.getKeyIndex());
         }
 
         return fileModel;
@@ -116,7 +115,6 @@ public class FileUtil {
                 fileModel.setFilePath(fullPath);
                 fileModel.setFileNm(file.getName());
                 fileModel.setFileCateCd(fileDto.getCateCd());
-                fileModel.setKeyIndex(fileDto.getKeyIndex());
                 fileModelList.add(fileModel);
             }
         }

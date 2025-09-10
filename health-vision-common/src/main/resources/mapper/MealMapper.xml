@@ -6,14 +6,29 @@
         INSERT INTO TB_MEAL (
             MEAL_INFO
             , MEAL_DT
+            , FILE_ID
             , USER_ID
             , REG_DT
         ) VALUES (
             #{mealInfo}
             , #{mealDt}
+            , #{fileId}
             , #{regId}
             , NOW()
         )
     </insert>
+    
+    <select id="selectMealList" resultType="com.mutecsoft.healthvision.common.model.Meal">
+        SELECT
+            MEAL_ID
+            , MEAL_INFO
+            , MEAL_DT
+            , USER_ID
+            , REG_DT
+            , FILE_ID
+        FROM TB_MEAL
+        WHERE USER_ID = #{userId}
+        ORDER BY REG_DT DESC
+    </select>
     
 </mapper>

@@ -11,14 +11,10 @@ import lombok.ToString;
 @ToString
 public class FileModel extends BaseModel {
     private Long fileId;
-    private Long fileGroupId;
-    
     private String fileCateCd;
     private String fileNm;
     private String filePath;
     private String originFileNm;
     private Long fileSize;
     
-    //추가 정보
-    private int keyIndex; //메인 엔티티와 파일을 매핑하기 위한 인덱스
 }

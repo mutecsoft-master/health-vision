@@ -12,8 +12,11 @@ public class MedicationLogDto {
 		private Long medLogId;
 		private Long medInfoId;
 		private LocalDateTime doseDt;
+		private Long fileId;
 		private Long userId;
 		private LocalDateTime regDt;
+		
+		private String imgUrl;
 
 		//MedicationInfo
 		private String medNm;

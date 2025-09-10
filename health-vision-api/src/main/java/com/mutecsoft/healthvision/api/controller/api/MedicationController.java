@@ -1,10 +1,12 @@
 package com.mutecsoft.healthvision.api.controller.api;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mutecsoft.healthvision.api.service.MedicationService;
 import com.mutecsoft.healthvision.api.util.UserUtil;
+import com.mutecsoft.healthvision.common.dto.MedicationInfoDto.MedicationInfoResponse;
 import com.mutecsoft.healthvision.common.dto.MedicationLogDto.MedicationLogResponse;
 import com.mutecsoft.healthvision.common.dto.ResponseDto;
 import com.mutecsoft.healthvision.common.dto.UserDto.UserInfo;
@@ -34,7 +37,7 @@ public class MedicationController {
 
 	@Operation(summary = "복약정보 등록", description = "복약정보 등록")
 	@PostMapping("/info")
-	public ResponseEntity<ResponseDto> insertMedicationInfo(@RequestBody MedicationInfo medInfo) {
+	public ResponseEntity<ResponseDto> insertMedicationInfo(@ModelAttribute MedicationInfo medInfo) throws IOException {
 		
 		medicationService.insertMedicationInfo(medInfo);
 		
@@ -55,7 +58,7 @@ public class MedicationController {
 	public ResponseEntity<ResponseDto> selectMedicationInfoList() {
 		
 		UserInfo userInfo = userUtil.getUserInfo();
-		List<MedicationInfo> list = medicationService.selectMedicationInfoList(userInfo.getUserId());
+		List<MedicationInfoResponse> list = medicationService.selectMedicationInfoList(userInfo.getUserId());
 		
 		return ResponseEntity.ok(new ResponseDto(true, list));
 	}

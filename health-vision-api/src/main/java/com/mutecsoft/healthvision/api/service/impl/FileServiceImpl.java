@@ -58,7 +58,7 @@ public class FileServiceImpl implements FileService{
 				FileCateCdEnum fileCateCdEnum = FileCateCdEnum.fromValue(fileModel.getFileCateCd());
 				
 				switch (fileCateCdEnum) {
-					case FOOD: case PRESET: case PROFILE: {
+					case MEAL: case MEDICATION: {
 						//소유자 체크
 						if(!userInfo.getUserId().equals(fileModel.getRegId())) {
 							throw new RuntimeException("접근 권한이 없습니다.");
