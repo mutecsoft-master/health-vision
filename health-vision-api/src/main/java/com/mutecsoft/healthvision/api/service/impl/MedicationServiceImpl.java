@@ -59,6 +59,18 @@ public class MedicationServiceImpl implements MedicationService {
 
 	@Override
 	public void insertMedicationLog(MedicationLog medLog) {
+		
+		UserInfo userInfo = userUtil.getUserInfo();
+		
+		MedicationInfoSearchRequest searchReq = new MedicationInfoSearchRequest();
+		searchReq.setMedInfoId(medLog.getMedInfoId());
+		searchReq.setUserId(userInfo.getUserId());
+		
+		MedicationInfo medInfo = medicationMapper.selectMedicationInfo(searchReq);
+		if(medInfo == null) {
+			throw new CustomException("복약정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
 		medicationMapper.insertMedicationLog(medLog);
 	}
 
