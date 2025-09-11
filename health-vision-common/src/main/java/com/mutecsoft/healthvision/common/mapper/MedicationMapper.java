@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.mutecsoft.healthvision.common.annotation.LoginId;
 import com.mutecsoft.healthvision.common.dto.MedicationInfoDto.MedicationInfoSearchRequest;
 import com.mutecsoft.healthvision.common.dto.MedicationLogDto.MedicationLogResponse;
+import com.mutecsoft.healthvision.common.dto.MedicationLogDto.MedicationLogSearchRequest;
 import com.mutecsoft.healthvision.common.model.MedicationInfo;
 import com.mutecsoft.healthvision.common.model.MedicationLog;
 
@@ -19,12 +20,25 @@ public interface MedicationMapper {
 	@LoginId
 	void insertMedicationLog(MedicationLog medLog);
 
-	List<MedicationInfo> selectMedicationInfoList(Long userId);
-
 	List<MedicationLogResponse> selectMedicationLogList(Long userId);
+	
+	MedicationLog selectMedicationLog(MedicationLogSearchRequest searchReq);
+	
+	void deleteMedicationLog(Long medLogId);
+	
+	
+	
+	
+	
+	
+	List<MedicationInfo> selectMedicationInfoList(Long userId);
 
 	MedicationInfo selectMedicationInfo(MedicationInfoSearchRequest searchReq);
 
 	void deleteMedicationInfo(Long medInfoId);
+
+	
+
+	
 
 }

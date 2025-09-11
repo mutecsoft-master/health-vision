@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mutecsoft.healthvision.common.mapper.MedicationMapper">
 
-    <insert id="insertMedicationInfo" parameterType="com.mutecsoft.healthvision.common.model.MedicationInfo">
+    <insert id="insertMedicationInfo" parameterType="com.mutecsoft.healthvision.common.model.MedicationInfo" useGeneratedKeys="true" keyProperty="medInfoId">
         INSERT INTO TB_MEDICATION_INFO (
             MED_NM
             , DOSE_PERIOD
@@ -29,14 +29,61 @@
             MED_INFO_ID
             , DOSE_DT
             , USER_ID
+            , DEL_YN
             , REG_DT
         ) VALUES (
             #{medInfoId}
             , #{doseDt}
             , #{regId}
+            , 'N'
             , NOW()
         )
     </insert>
+    
+    
+    <select id="selectMedicationLogList" resultType="com.mutecsoft.healthvision.common.dto.MedicationLogDto$MedicationLogResponse">
+        SELECT
+            LOGS.MED_LOG_ID
+            , LOGS.MED_INFO_ID
+            , LOGS.DOSE_DT
+            , LOGS.USER_ID
+            , LOGS.REG_DT
+            , INFO.MED_NM
+            , INFO.DOSE_PERIOD
+            , INFO.DOSE_START_DATE
+            , INFO.DOSE_END_DATE
+            , INFO.FILE_ID
+        FROM TB_MEDICATION_LOGS LOGS
+        LEFT JOIN TB_MEDICATION_INFO INFO
+        ON LOGS.MED_INFO_ID = INFO.MED_INFO_ID
+        WHERE LOGS.USER_ID = #{userId}
+        AND LOGS.DEL_YN = 'N'
+        ORDER BY LOGS.REG_DT DESC
+    </select>
+    
+    <select id="selectMedicationLog" resultType="com.mutecsoft.healthvision.common.model.MedicationLog">
+        SELECT
+            MED_LOG_ID
+            , MED_INFO_ID
+            , DOSE_DT
+            , USER_ID
+            , REG_DT
+        FROM TB_MEDICATION_LOGS
+        WHERE MED_LOG_ID = #{medLogId}
+          AND USER_ID = #{userId}
+    </select>
+    
+    <update id="deleteMedicationLog">
+        UPDATE TB_MEDICATION_LOGS
+        SET DEL_YN = 'Y'
+            , DEL_DT = NOW()
+        WHERE MED_LOG_ID = #{medLogId}
+    </update>
+    
+    
+    
+    
+    
     
     
     <select id="selectMedicationInfoList" resultType="com.mutecsoft.healthvision.common.model.MedicationInfo">
@@ -56,24 +103,7 @@
         ORDER BY REG_DT DESC
     </select>
     
-    <select id="selectMedicationLogList" resultType="com.mutecsoft.healthvision.common.dto.MedicationLogDto$MedicationLogResponse">
-        SELECT
-            LOGS.MED_LOG_ID
-            , LOGS.MED_INFO_ID
-            , LOGS.DOSE_DT
-            , LOGS.USER_ID
-            , LOGS.REG_DT
-            , INFO.MED_NM
-            , INFO.DOSE_PERIOD
-            , INFO.DOSE_START_DATE
-            , INFO.DOSE_END_DATE
-            , INFO.FILE_ID
-        FROM TB_MEDICATION_LOGS LOGS
-        LEFT JOIN TB_MEDICATION_INFO INFO
-        ON LOGS.MED_INFO_ID = INFO.MED_INFO_ID
-        WHERE LOGS.USER_ID = #{userId}
-        ORDER BY LOGS.REG_DT DESC
-    </select>
+    
     
     <select id="selectMedicationInfo" resultType="com.mutecsoft.healthvision.common.model.MedicationInfo">
         SELECT

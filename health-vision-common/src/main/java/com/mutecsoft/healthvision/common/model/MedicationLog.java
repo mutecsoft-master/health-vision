@@ -15,6 +15,8 @@ public class MedicationLog extends BaseModel {
 	private Long medInfoId;
 	private LocalDateTime doseDt;
 	private Long userId;
+	private String delYn;
+	private LocalDateTime delDt;
 	private Long regId;
 	private LocalDateTime regDt;
 	

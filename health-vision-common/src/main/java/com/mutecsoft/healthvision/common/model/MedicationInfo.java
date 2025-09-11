@@ -1,6 +1,7 @@
 package com.mutecsoft.healthvision.common.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,8 +24,9 @@ public class MedicationInfo extends BaseModel {
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate doseEndDate;
-	private String delYn;
 	private Long userId;
+	private String delYn;
+	private LocalDateTime delDt;
 	private Long fileId;
 	
 	//추가 정보

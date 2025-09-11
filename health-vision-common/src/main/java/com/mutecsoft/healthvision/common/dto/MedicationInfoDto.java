@@ -3,9 +3,28 @@ package com.mutecsoft.healthvision.common.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 public class MedicationInfoDto {
+	
+	
+	@Data
+	public static class MedicationInfoRequest {
+		private String medNm;
+		private String dosePeriod;
+		
+		@DateTimeFormat(pattern = "yyyy-MM-dd")
+		private LocalDate doseStartDate;
+		
+		@DateTimeFormat(pattern = "yyyy-MM-dd")
+		private LocalDate doseEndDate;
+		
+		private String doseYn; //복약여부
+		private LocalDateTime doseDt;
+	}
+	
 
 	@Data
 	public static class MedicationInfoSearchRequest {
